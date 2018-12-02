@@ -4,7 +4,7 @@ git config --global user.email "johnbelieve2@gmail.com"
 git init
 git add -A
 git commit -m "first commit"
-git remote set-url origin https://believe2:idspispopd2@github.com/believe2/Diamond.git
+git remote set-url origin https://believe2:idbehold2John@github.com/believe2/Diamond.git
 git push -u origin master
 
 pause
