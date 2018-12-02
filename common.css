@@ -1,0 +1,67 @@
+.myTitle {
+	color: red;
+	font-weight: bold;
+	display: block;
+	width: 100%;
+	float: left;
+	font-size:25px;
+}
+
+.pf_greenWaterSetting {
+	display: none;
+}
+
+.pf_stretchWallSetting {
+	display: none;
+}
+
+.pf_stepSetting {
+	display: none;
+}
+
+.pf_mapDimensionSetting {
+	display: none;
+}
+
+.pf_loadStepFile {
+	display: none;
+}
+
+.pf_saveStepFile {
+	display: none;
+}
+
+.pf_save_createFile {
+	display: none;
+}
+
+.pf_save_updateFile {
+	display: none;
+}
+
+.pf_syncMap {
+	display: none;
+}
+
+.pf_languageSetting {
+	display: none;
+}
+
+.title_inline {
+	display:inline;
+}
+
+.my_picker {
+	width: 200px; 
+	height: 25px
+}
+
+#particles-js {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to bottom, rgba(117, 114, 113, 0.8) 10%, rgba(40, 49, 77, 0.8) 30%, rgba(29, 35, 71, 0.8) 50%, rgba(19, 25, 28, 0.8) 80%, rgba(15, 14, 14, .8) 100%), url('src/bg/1.jpg');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: 50% 50%;
+}

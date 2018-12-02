@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title> Cube game </title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<link rel="shortcut icon" href="favicon.ico" type="image/x-icon"/>
+	<link rel="bookmark" href="favicon.ico" type="image/x-icon"/>
+	<link rel="stylesheet" type="text/css" href="common.css">
+	<link rel="stylesheet" type="text/css" href="src/3d-button/3d-btn.css">
+	<link rel="stylesheet" type="text/css" href="src/bootstrap/css/bootstrap.css">
+	<link rel="stylesheet" type="text/css" href="src/popup-frame/frame.css">
+	<link rel="stylesheet" type="text/css" href="src/checkbox/build.css">
+	<link rel="stylesheet" type="text/css" href="src/checkbox/Font-Awesome/css/font-awesome.css">
+	<link type="text/css" rel="stylesheet" href="src/jsgrid-1.5.3/dist/jsgrid.min.css" />
+	<link type="text/css" rel="stylesheet" href="src/jsgrid-1.5.3/dist/jsgrid-theme.min.css" />
+	<link rel="stylesheet" href="src/flipclock/flipclock.css">
+	<link rel="stylesheet" href="src/tooltip/tipso.min.css">
+
+	<script type="text/javascript" src="src/jquery/jquery-3.1.1.min.js"></script>
+	<script type="text/javascript" src="src/bootstrap/js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="src/jsgrid-1.5.3/dist/jsgrid.min.js"></script>
+	<script type="text/javascript" src="src/flipclock/flipclock.js"></script>
+	<script type="text/javascript" src="src/tooltip/tipso.min.js"></script>
+	<script type="text/javascript" src="src/soundjs/createjs.js"></script>
+	<script type="text/javascript" src="src/bg/particles.min.js"></script>
+
+	<script type="text/javascript" src="src/GameFrame.js"></script>
+	<script type="text/javascript" src="src/EditMapFrame.js"></script>
+	<script type="text/javascript" src="src/StepSettingFrame.js"></script>
+	<script type="text/javascript" src="src/ObjSettingFrame.js"></script>
+
+	<script type="text/javascript" src="src/util/position.js"></script>
+	<script type="text/javascript" src="src/util/math.js"></script>
+	<script type="text/javascript" src="src/util/delockCounter.js"></script>
+	<script type="text/javascript" src="src/util/trajHistory.js"></script>
+	<script type="text/javascript" src="src/util/posGenerator.js"></script>
+	<script type="text/javascript" src="src/util/space.js"></script>
+	<script type="text/javascript" src="src/util/uiCreater.js"></script>
+	<script type="text/javascript" src="src/util/jsGrid.js"></script>
+	<script type="text/javascript" src="src/util/counter.js"></script>
+	<script type="text/javascript" src="src/util/objSelector.js"></script>
+	<script type="text/javascript" src="src/util/arrowHint.js"></script>
+
+	<script type="text/javascript" src="src/factory/map/mapFactory.js"></script>
+	<script type="text/javascript" src="src/factory/map/mapFileProcessor.js"></script>
+
+	<script type="text/javascript" src="src/factory/audio/soundEffect.js"></script>
+	<script type="text/javascript" src="src/factory/audio/backgroundMusic.js"></script>
+
+	<script type="text/javascript" src="src/factory/gameObj/objFactory.js"></script>
+	<script type="text/javascript" src="src/factory/gameObj/baseObj.js"></script>
+	<script type="text/javascript" src="src/factory/gameObj/stone.js"></script>
+	<script type="text/javascript" src="src/factory/gameObj/road.js"></script>
+	<script type="text/javascript" src="src/factory/gameObj/sand.js"></script>
+	<script type="text/javascript" src="src/factory/gameObj/stoneWall.js"></script>
+	<script type="text/javascript" src="src/factory/gameObj/diamond.js"></script>
+	<script type="text/javascript" src="src/factory/gameObj/stretchWall.js"></script>
+	<script type="text/javascript" src="src/factory/gameObj/magicWall.js"></script>
+	<script type="text/javascript" src="src/factory/gameObj/greenWater.js"></script>
+	<script type="text/javascript" src="src/factory/gameObj/burstArea.js"></script>
+	<script type="text/javascript" src="src/factory/gameObj/monsterCube.js"></script>
+	<script type="text/javascript" src="src/factory/gameObj/tile.js"></script>
+	<script type="text/javascript" src="src/factory/gameObj/butterfly.js"></script>
+	<script type="text/javascript" src="src/factory/gameObj/master.js"></script>
+	<script type="text/javascript" src="src/factory/gameObj/exit.js"></script>
+
+	<script type="text/javascript" src="src/factory/language/languageFactory.js"></script>
+	<script type="text/javascript" src="src/factory/language/china.js"></script>
+	<script type="text/javascript" src="src/factory/language/english.js"></script>
+
+	<script type="text/javascript" src="src/factory/configuration/stepSetting.js"></script>
+
+	<script type="text/javascript" src="src/factory/image/imageFactory.js" ></script>
+
+	<script type="text/javascript" src="src/factory/action/actionFactory.js" ></script>
+	<script type="text/javascript" src="src/factory/action/baseAction.js" ></script>
+	<script type="text/javascript" src="src/factory/action/moveArroundWall.js" ></script>
+	<script type="text/javascript" src="src/factory/action/moveFalling.js"></script>
+	<script type="text/javascript" src="src/factory/action/animateGameObject.js" ></script>
+	<script type="text/javascript" src="src/factory/action/meetCheckBurst.js" ></script>
+	<script type="text/javascript" src="src/factory/action/meetCheckBurstOtherObject.js" ></script>
+	<script type="text/javascript" src="src/factory/action/genObjSpread.js" ></script>
+	<script type="text/javascript" src="src/factory/action/genObjDirectionStretch.js"></script>
+	<script type="text/javascript" src="src/factory/action/meetTransformObj.js"></script>
+
+	<script type="text/javascript" src="src/EventProcessor/EventQueueHandler.js"></script>
+</head>
+<body scroll="no" style="overflow: hidden">
+	<div id="particles-js">
+	 	<ul class="nav nav-tabs">
+			<li class="active"><a data-toggle="tab" href="#mainGame" id="tab_game"><span class="glyphicon glyphicon-knight"></span></a></li>
+			<li><a data-toggle="tab" href="#editMap" id="tab_editMap"><span class="glyphicon glyphicon-pencil"></span></a></li>
+		</ul>
+		<div  class="tab-content">
+			<div id="mainGame" class="tab-pane fade in active">
+				<div>
+					<canvas id="canvGame" width="600" height="700" style="position:absolute;"></canvas>
+					<div style="float:left; margin-left: 20px; position:absolute; left: 610px">
+						<div>
+							<table>
+								<tr>
+									<td><img src="icon/clock.png" alt="Smiley face" height="70" width="70"></td>
+									<td><div class="clock" id="clock_time"></div></td>
+								</tr>
+							</table>
+							<table>
+								<tr>
+									<td><img src="icon/diamond.png" alt="Smiley face" height="50" width="70"></td>
+									<td><div class="clock" id="clock_diamondEatNum"></div></td>
+									<td><div class="myTitle">/</div></td>
+									<td><div class="clock" id="clock_diamondTarget"></div></td>
+								</tr>
+							</table>
+							<div>
+								<button id="btnStart" class="btn btn-primary btn3d" style="background-color: black" 
+									 title=""><span class="glyphicon glyphicon-play"></span></button> <br>
+								<button id="btnRestart" class="btn btn-primary btn3d" style="background-color: black"  title=""><span class="glyphicon glyphicon-repeat"></span></button> <br>
+								<button id="btnBurstMyself" class="btn btn-primary btn3d" style="background-color: black"  title=""><span class="glyphicon glyphicon-fire"></span></button> <br>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div id="editMap" class="tab-pane fade">
+				<div style="overflow: scroll; height: 722px; width: 620px; position:absolute;">
+					<canvas id="canvEditMap" width="600" height="700"></canvas>
+				</div>
+				<div style="float:left; margin-left: 20px; position:absolute; left: 620px">
+					<button id="btnModeFurnish" class="btn btn-primary btn3d"  title=""><span class="glyphicon glyphicon-th"></span></button>
+					<br>
+					<button id="btnModeConfig" class="btn btn-primary btn3d"  title=""><span class="glyphicon glyphicon-cog"></span></button>
+					<br><br><br>
+					<button id="btnStepSetting" class="btn btn-primary btn3d" style="background-color: black"  title=""><span class="glyphicon glyphicon-tower"></span></button>
+					<br>
+					<button id="btnDimensionSetting" class="btn btn-primary btn3d" style="background-color: black"  title=""><span class="glyphicon glyphicon-fullscreen"></span></button>
+					<br>
+					<button id="btnloadFile" class="btn btn-primary btn3d" style="background-color: black"  title=""><span class="glyphicon glyphicon-level-up"></span></button>
+					<br>
+					<button id="btnSaveFile" class="btn btn-primary btn3d" style="background-color: black"  title=""><span class="glyphicon glyphicon-floppy-disk"></span></button>
+					<br>
+					<button id="btnSync" class="btn btn-primary btn3d" style="background-color: black"  title=""><span class="glyphicon glyphicon-download-alt"></span></button>
+					<br>
+					<button id="btnLanguageSetting" class="btn btn-primary btn3d" style="background-color: black"  title=""><span class="glyphicon glyphicon-flag"></span></button>
+				</div>
+				<div style="position: relative; position:absolute; left: 700px"">
+					<div id="objSelector" style="margin-left: 20px; height: 722px; overflow-y: scroll;"></div>
+				</div>
+				<div id="popupFrameObjSetting" class="modal">
+					<div class="modal-content">
+						<div class="modal-header">
+							<table>
+								<tr>
+									<td id="pf_tx_obj" class="title_inline"></td>
+									<td id="pf_objType"></td>
+								</tr>
+								<tr>
+									<td id="pf_tx_obj_pos" class="title_inline"></td>
+									<td id="pf_objPos"></td>
+								</tr>
+							</table>
+						</div>
+						<br>
+						<div id="pf_greenWaterSetting" class="pf_greenWaterSetting">
+							<table>
+								<tr>
+									<td id="pf_tx_minst" class="title_inline"></td>
+									<td><input type="number" id="pf_inputMinSpdTime" min="1" max="60" value="1" autofocus="true"></td>
+								</tr>
+								<tr>
+									<td id="pf_tx_maxst" class="title_inline"></td>
+									<td><input type="number" id="pf_inputMaxSpdTime" min="1" max="60" value="1" autofocus="true"></td>
+								</tr>
+								<tr>
+									<td id="pf_tx_minsn" class="title_inline"></td>
+									<td><input type="number" id="pf_inputMinSpdNum" min="1" max="10" value="1" autofocus="true"></td>
+								</tr>
+								<tr>
+									<td id="pf_tx_maxsn" class="title_inline"></td>
+									<td><input type="number" id="pf_inputMaxSpdNum" min="1" max="10" value="1" autofocus="true"></td>
+								</tr>
+							</table>
+						</div>
+						<div id="pf_stretchWallSetting" class="pf_stretchWallSetting">
+							<div id="pf_sws_title" class="title_inline"></div><br>
+							<div class="checkbox checkbox-success">
+		                        <input id="pf_isSelLeft" class="styled" type="checkbox"><label id="pf_sws_left"></label> <br>
+		                        <input id="pf_isSelRight" class="styled" type="checkbox"><label id="pf_sws_right"></label> <br>
+		                        <input id="pf_isSelUp" class="styled" type="checkbox"><label id="pf_sws_up"></label> <br>
+		                        <input id="pf_isSelDown" class="styled" type="checkbox"><label id="pf_sws_down"></label> <br>
+	                		</div>
+						</div>
+						<div>
+							<button id="pf_os_btnOk" class="btn btn-primary btn3d"></button>
+							<button id="pf_os_btnCancel" class="btn btn-primary btn3d" 
+								onclick="$('#popupFrameObjSetting').css('display', 'none')"></button>
+						</div>
+					</div>
+				</div>
+
+				<div id="popupFrameStepSetting" class="modal">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h4 class="modal-title" id="pf_ss_title">Modal title</h4>
+						</div>
+						<br>
+						<div id="pf_stepSetting" class="pf_stepSetting">
+							<div id="pf_tx_diamondTarget" class="title_inline"></div>
+							<input id="pf_selDiamondNo" type="number" value="1" min="1" max="300"> <br><br>
+							<div id="pf_tx_timeLimitSetting" class="title_inline"></div>
+							<input id="pf_setTimeLimite" type="number" value="10" min="10" max="1000"> 
+							<div id="pf_sec" class="title_inline"></div><br>
+						</div>
+						<div id="pf_mapDimensionSetting" class="pf_mapDimensionSetting">
+							<div id="pf_tx_width" class="title_inline"></div>
+							<input id="pf_selWidth" type="number" value="12" min="12" max="100">
+							<div id="pf_tx_height" class="title_inline"></div>
+							<input id="pf_selHeight" type="number" value="14" min="14" max="100">
+						</div>
+						<div id="pf_loadStepFile" class="pf_loadStepFile">
+							<div id="pf_tx_loadStepFile" class="title_inline"></div>
+							<input id="pf_selStepFileName" type="text" value="None" disabled="true"><br><br>
+							<div id="pf_fileSelector"></div>
+						</div>
+						<div id="pf_saveStepFile" class="pf_saveStepFile">
+							<form>
+								<label class="radio-inline">
+									<input type="radio" name="pf_optSave" value="createNewFile">
+									<div id="pf_tx_createNewFile" class="title_inline"></div>
+								</label>
+								<label class="radio-inline">
+									<input type="radio" name="pf_optSave" value="updateFile">
+									<div id="pf_tx_updateFile" class="title_inline"></div>
+								</label>
+							</form>
+							<br>
+							<div id="pf_save_createFile" class="pf_save_createFile">
+								<div id="pf_tx_inputFileName" class="title_inline"></div>
+								<input id="pf_save_fileName" type="text"> .map
+							</div>
+							<div id="pf_save_updateFile" class="pf_save_updateFile">
+								<div id="pf_tx_selItem" class="title_inline"></div>
+								<input id="pf_save_selStepFileName" type="text" value="None" disabled="true"><br><br>
+								<div id="pf_save_fileSelector"></div>
+							</div>
+						</div>
+						<div id="pf_syncMap" class="pf_syncMap">
+							<div id="pf_tx_sync" class="title_inline"></div>
+						</div>
+						<div id="pf_languageSetting" class="pf_languageSetting">
+							<select id="pf_languageSelector" class="selectpicker my_picker"></select>
+						</div>
+						<br>
+						<div>
+							<button id="pf_ss_btnOk" class="btn btn-primary btn3d"></button>
+							<button id="pf_ss_btnCancel" class="btn btn-primary btn3d" 
+								onclick="$('#popupFrameStepSetting').css('display', 'none')"></button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script type="text/javascript">
+			//main game
+			var canvGame = document.getElementById("canvGame");
+			var ctx = canvGame.getContext("2d");
+			var gameFrame = new GameFrame(ctx);
+	    	canvGame.addEventListener('mousedown', gameFrame.slotLetMasterMove.bind(gameFrame), false);
+	    	canvGame.addEventListener('mouseup', gameFrame.slotLetMasterStopMove.bind(gameFrame), false);
+	    	canvGame.addEventListener('touchend', gameFrame.slotLetMasterStopMove.bind(gameFrame), false);
+	    	document.getElementById("btnStart").addEventListener('click', gameFrame.slotStartGame.bind(gameFrame));
+	    	document.getElementById("btnRestart").addEventListener('click', gameFrame.slotReloadGame.bind(gameFrame));
+	    	document.getElementById("btnBurstMyself").addEventListener('click', gameFrame.slotBurstMyself.bind(gameFrame));
+	    	
+	    	//edit map
+			var canvEditMap = document.getElementById("canvEditMap");
+			var ctx = canvEditMap.getContext("2d");
+			var editMapFrame = new EditMapFrame(ctx, gameFrame);
+			canvEditMap.addEventListener('mousedown', editMapFrame.slotOnPushPanel.bind(editMapFrame), false);
+			canvEditMap.addEventListener('mousemove', editMapFrame.slotOnTouchPanel.bind(editMapFrame), false);
+			canvEditMap.addEventListener('click', editMapFrame.slotOnTouchPanel.bind(editMapFrame), false);
+			canvEditMap.addEventListener('mouseup', editMapFrame.slotOnPopupPanel.bind(editMapFrame), false);
+		</script>
+		<script type="text/javascript" src="src/bg/app.js"></script>
+	</div>
+</div>
+</body>
+</html>
