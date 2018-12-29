@@ -1,10 +1,12 @@
-var GameFrame = function(ctx){
+var GameFrame = function(ctx, canvGame){
+	this.gamePanel = new MainPanel(ctx, canvGame);
+
 	this.mapFactory = new MapFactory(-1, "FLOOR");
 	this.floorMapFactory = new MapFactory(0, "OBJECT");
 	this.stepSetting = new StepSetting([this.mapFactory, this.floorMapFactory]);
 	this.mapFileProcessor = new MapFileProcessor({floorMap: this.floorMapFactory, objMap: this.mapFactory}, this.stepSetting);
 
-	this.objFactory = new ObjFactory(new ImageFactory('img/'), this.mapFactory);
+	this.objFactory = new ObjFactory(new ImageFactory('img/'), this.mapFactory, this.gamePanel);
 	this.mapFactory.setObjFactory(this.objFactory);
 	this.soundEffectFactory =  new SoundEffectFactory();
 	this.backgroundMusicFactory = new BackgroundMusicFactory();

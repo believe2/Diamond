@@ -9,6 +9,8 @@ var Master = function (args) {
  	this.eat = ['DIAMOND'];
  	this.push = ['STONE'];
 	this.curImage = 12;
+	this.curMoveDirection = 'DOWN'
+	this.isMoveLasting - false;
 
 	this.meetCheckBurst = this.actionFactory.create({actionType: 'MEET_CHECK_BURST',
 		                                             mainObj: this
@@ -16,7 +18,15 @@ var Master = function (args) {
 	this.animateGameObject = this.actionFactory.create({actionType: 'ANIMATE_GAME_OBJECT',
 		                                                mainObj: this
 	                                                  });
+	this.moveByHand = this.actionFactory.create({actionType: 'MOVE_BY_HAND',
+		                                         mainObj: this
+	                                           });
 
+	this.setController(this.gamePanel);
+
+	this.registerAction(1, 230, this.animateGameObject.doAction.bind(this.animateGameObject));
+
+	/*
 	this.dkCounter = new DeLockCounter(3);
 
 	this.triggerBurstingEvent = args.bindFuncBurst;
@@ -34,6 +44,7 @@ var Master = function (args) {
 
 	this.registerAction(0, this.CYCLE_TRIGER, this.monitorAction.bind(this));
 	this.registerFunc(0, this.triggerBurstEvent.bind(this));
+	*/
 };
 
 Master.prototype = Object.create(BaseObject.prototype);
@@ -46,6 +57,40 @@ Master.prototype.getCurMoveDirection = function() {
 
 Master.prototype.getIsMoveLasting = function() {
 	return this.isMoveLasting;
+};
+
+Master.prototype.setController = function(panel) {
+	this.gamePanel.bindOnMouseDownEvent(this.letMasterMove.bind(this));
+	this.gamePanel.bindOnMouseUpEvent(this.letMasterStopMove.bind(this));
+};
+
+Master.prototype.letMasterMove = function(clickPos) {
+	var posGen = new PosGenerator();
+	this.isMoveLasting = true;
+	console.log(posGen.transformUnitVector(new Position(clickPos.x - this.curPos.x, clickPos.y - this.curPos.y)))
+};
+
+Master.prototype.letMasterStopMove = function() {
+	this.isMoveLasting = false;
+};
+
+Master.prototype.setNextImg = function() {
+	var nextImgIndex = -1;
+	var imageLen = this.listImage.length / 4;
+	var listIndexBase = {
+		'LEFT': 0,
+		'RIGHT': imageLen,
+		'UP': imageLen * 2,
+		'DOWN': imageLen * 3
+	};
+	//check range in current direction
+	if(this.curImage >= listIndexBase[this.curMoveDirection] && this.curImage < listIndexBase[this.curMoveDirection] + imageLen) {
+		nextImgIndex = listIndexBase[this.curMoveDirection] + (((this.curImage % imageLen) + 1) % imageLen);
+	}
+	else {
+		nextImgIndex = listIndexBase[this.curMoveDirection];
+	}
+	this.curImage = nextImgIndex;
 };
 
 Master.prototype.monitorAction = function() {

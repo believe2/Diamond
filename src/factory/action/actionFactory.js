@@ -3,7 +3,8 @@ var ActionFactory = function(eventQueueHandler) {
 
 	this.move = {
 		'MOVE_ARROUND_WALL' : MoveArroundWall,
-		'MOVE_FALLING' : MoveFalling
+		'MOVE_FALLING' : MoveFalling,
+		'MOVE_BY_HAND' : MoveByHand
 	};
 	this.meet = {
 		'MEET_CHECK_BURST' : MeetCheckBurst,

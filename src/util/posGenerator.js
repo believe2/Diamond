@@ -50,3 +50,17 @@ PosGenerator.prototype.posByConstantString = function(pos, str) {
 	}
 	return newPos;
 };
+
+PosGenerator.prototype.transformUnitVector = function(vector) {
+	var lvectorl = Math.sqrt(vector.x * vector.x + vector.y * vector.y);
+	var unitVector = new Position(vector.x / lvectorl, vector.y / lvectorl);
+	return unitVector;
+};
+
+PosGenerator.prototype.isMoveUnitVectorInCheckList = function(posCur, posNext, unitVectorList) {
+	if(vectorList[0] = 'ALL') {
+		return true;
+	}
+	var vextorX = posNext.x - posCur.x;
+	var vectorY = posNext.y - posCur.y;
+};

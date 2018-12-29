@@ -28,6 +28,8 @@
 	<script type="text/javascript" src="src/EditMapFrame.js"></script>
 	<script type="text/javascript" src="src/StepSettingFrame.js"></script>
 	<script type="text/javascript" src="src/ObjSettingFrame.js"></script>
+	<script type="text/javascript" src="src/MainPanel.js"></script>
+
 
 	<script type="text/javascript" src="src/util/position.js"></script>
 	<script type="text/javascript" src="src/util/math.js"></script>
@@ -82,6 +84,7 @@
 	<script type="text/javascript" src="src/factory/action/genObjSpread.js" ></script>
 	<script type="text/javascript" src="src/factory/action/genObjDirectionStretch.js"></script>
 	<script type="text/javascript" src="src/factory/action/meetTransformObj.js"></script>
+	<script type="text/javascript" src="src/factory/action/moveByHand.js"></script>
 
 	<script type="text/javascript" src="src/EventProcessor/EventQueueHandler.js"></script>
 </head>
@@ -263,10 +266,10 @@
 			//main game
 			var canvGame = document.getElementById("canvGame");
 			var ctx = canvGame.getContext("2d");
-			var gameFrame = new GameFrame(ctx);
-	    	canvGame.addEventListener('mousedown', gameFrame.slotLetMasterMove.bind(gameFrame), false);
-	    	canvGame.addEventListener('mouseup', gameFrame.slotLetMasterStopMove.bind(gameFrame), false);
-	    	canvGame.addEventListener('touchend', gameFrame.slotLetMasterStopMove.bind(gameFrame), false);
+			var gameFrame = new GameFrame(ctx, canvGame);
+	    	//canvGame.addEventListener('mousedown', gameFrame.slotLetMasterMove.bind(gameFrame), false);
+	    	//canvGame.addEventListener('mouseup', gameFrame.slotLetMasterStopMove.bind(gameFrame), false);
+	    	//canvGame.addEventListener('touchend', gameFrame.slotLetMasterStopMove.bind(gameFrame), false);
 	    	document.getElementById("btnStart").addEventListener('click', gameFrame.slotStartGame.bind(gameFrame));
 	    	document.getElementById("btnRestart").addEventListener('click', gameFrame.slotReloadGame.bind(gameFrame));
 	    	document.getElementById("btnBurstMyself").addEventListener('click', gameFrame.slotBurstMyself.bind(gameFrame));

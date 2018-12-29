@@ -1,6 +1,7 @@
- var ObjFactory = function (imgFactory, map) {
+ var ObjFactory = function (imgFactory, map, gamePanel) {
  	this.imgFactory = imgFactory;
  	this.map = map;
+ 	this.gamePanel = gamePanel;
  	this.listObj = {
  		0: 'ROAD',
  		1: 'SAND',
@@ -54,6 +55,7 @@
  		args.type = target.type;
  		args.map = this.map;
  		args.actionFactory = this.actionFactory;
+ 		args.gamePanel = this.gamePanel;
  		obj = new target.builder(args);
  		obj.setListImageByImageFactory(this.imgFactory);
  	}

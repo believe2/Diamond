@@ -4,7 +4,8 @@ var BaseObject = function (args) {
  	};
 
  	this.actionFactory = args.actionFactory;
- 	this.map = args.map
+ 	this.map = args.map;
+ 	this.gamePanel = args.gamePanel;
 
  	this.isDelObj = false;
 	
