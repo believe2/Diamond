@@ -24,7 +24,7 @@ EventQueueHandler.prototype.handleEvent = function() {
 		var parms = this.eventQueue[index].parms;
 		switch(eventType) {
 			case 'EVENT_GAME_OBJ_MOVE' :
-				this.move(obj, action);
+				this.move(obj, action, parms);
 				break;
 			case 'EVENT_GAME_OBJ_TRANSFORM_IMG' :
 				this.transformObjImg(obj);
@@ -45,6 +45,9 @@ EventQueueHandler.prototype.handleEvent = function() {
 			case 'EVENT_PLAY_EFFECT_SOUND' :
 				this.playEffectSound(parms.soundId);
 				break;
+			case 'EVENT_MASTER_PUSH_OBJECT' :
+				this.push(obj, parms.objNextPos, parms.targetObj, parms.targetNextPos)
+				break;
 			default :
 				console.log('can not handle ' + eventType);
 				break;
@@ -56,13 +59,20 @@ EventQueueHandler.prototype.handleEvent = function() {
 EventQueueHandler.prototype.move = function(obj, action) {
 	//get current position and next position current game object will move in
 	var beforePos = obj.getCurPos();
-	var nextPos = action.nextPos();
+	var	nextPos = action.nextPos();
 	//set game object to next position
 	this.map.setEle(nextPos, obj);
 	//set refer object before position
 	if(nextPos != null){
 		this.map.setEle(beforePos, obj.genObjBeforeArea());
 	}
+};
+
+EventQueueHandler.prototype.push = function(objMaster, posMaster, objTarget, posTarget) {
+	this.map.setEle(posTarget, objTarget);
+	var beforePos = objMaster.getCurPos();
+	this.map.setEle(posMaster, objMaster);
+	this.map.setEle(beforePos, objMaster.genObjBeforeArea());
 };
 
 EventQueueHandler.prototype.transformObjImg = function(obj) {

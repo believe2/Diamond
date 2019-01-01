@@ -57,10 +57,27 @@ PosGenerator.prototype.transformUnitVector = function(vector) {
 	return unitVector;
 };
 
-PosGenerator.prototype.isMoveUnitVectorInCheckList = function(posCur, posNext, unitVectorList) {
-	if(vectorList[0] = 'ALL') {
-		return true;
-	}
+PosGenerator.prototype.isMoveUnitVectorInCheckList = function(posCur, posNext, listUnitVector) {
 	var vextorX = posNext.x - posCur.x;
 	var vectorY = posNext.y - posCur.y;
+	var unitVector = this.transformUnitVector(new Position(vextorX, vectorY));
+	if(listUnitVector[0] == 'ALL') {
+		return unitVector;
+	}
+	var index = 0;
+	var isExist = false;
+	while(!isExist && index < listUnitVector.length) {
+		if(unitVector.x == listUnitVector[index].x && unitVector.y == listUnitVector[index].y) {
+			isExist = true;
+		}
+		index = index + 1;
+	}
+	if(isExist) {
+		return unitVector;
+	}
+	return null;
 };
+
+PosGenerator.prototype.posByGivenVector = function(curPos, vector) {
+	return new Position(curPos.x + vector.x, curPos.y + vector.y);
+}

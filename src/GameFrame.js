@@ -278,6 +278,7 @@ GameFrame.prototype.slotDrawFrameEvent = function() {
 	}
 
 	//draw arrow hint
+	/*
 	if(this.arrowHint.getIsPaint()) {
 		var master = this.mapFactory.getOneOfObj("MASTER");
 		if(master != null) {
@@ -286,6 +287,7 @@ GameFrame.prototype.slotDrawFrameEvent = function() {
 			this.arrowHint.paint(panelPos, this.cubeWidth, this.cubeHeight, this.ctx);
 		}
 	}
+	*/
 };
 
 GameFrame.prototype.slotPlayBackgroundMusic = function() {

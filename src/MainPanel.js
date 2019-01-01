@@ -14,12 +14,12 @@ MainPanel.prototype.bindOnMouseDownEvent = function(bindFunc) {
 	if(this.mapBindFunc.MouseDown != null) {
 		this.canvas.removeEventListener('mousedown', this.mapBindFunc.MouseDown);
 	}
-	this.mapBindFunc.MouseDown = bindFunc;
 	var func = function(event) {
 		var touchPosCube = new Position(Math.floor(event.offsetX / this.cubeWidth), Math.floor(event.offsetY / this.cubeHeight));
 		bindFunc(touchPosCube);
 	};
-	this.canvas.addEventListener('mousedown', func.bind(this), false);
+	this.mapBindFunc.MouseDown = func.bind(this);
+	this.canvas.addEventListener('mousedown', this.mapBindFunc.MouseDown, false);
 };
 
 MainPanel.prototype.bindOnMouseUpEvent = function(bindFunc) {
@@ -27,7 +27,7 @@ MainPanel.prototype.bindOnMouseUpEvent = function(bindFunc) {
 		this.canvas.removeEventListener('mouseup', this.mapBindFunc.MouseUp);
 	}
 	this.mapBindFunc.MouseUp = bindFunc;
-	this.canvas.addEventListener('mouseup', bindFunc, false);
+	this.canvas.addEventListener('mouseup', this.mapBindFunc.MouseUp, false);
 };
 
 MainPanel.prototype.getCanvas = function() {
