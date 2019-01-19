@@ -1,7 +1,5 @@
 var MoveByHand = function(args) {
 	BaseAction.call(this, args);
-	this.lockMaxTime = args.lockTime;
-	this.lock = -1;
 };
 
 MoveByHand.prototype = Object.create(BaseAction.prototype);
@@ -11,19 +9,15 @@ MoveByHand.prototype.constructor = MoveByHand;
 MoveByHand.prototype.doAction = function() {
 	var isLasting = this.mainObj.getIsMoveLasting();
 	if(!isLasting) {
-		this.lock = -1;
+		return;
 	}
 	else {
-		if(this.lock > 0) {
-			this.lock = this.lock - 1;
-			return;
-		}
 		var countNextPos = this.getMasterClickNextPos();
 		if(countNextPos != null) {
-			if(this.mainObj.isPassby(countNextPos)) {
+			if(this.mainObj.isPassby(countNextPos)) {  //master move to next position
 				this.eventQueueHandler.throwEvent('EVENT_GAME_OBJ_MOVE', this.mainObj, this);
 			}
-			else if(this.mainObj.isMeetActionObject('MASTER_PUSH', countNextPos)) {
+			else if(this.mainObj.isMeetActionObject('MASTER_PUSH', countNextPos)) {  //master push another object to next position
 				var posGen = new PosGenerator();
 				var moveDirVector = this.mainObj.getCurMoveDirection();
 				var targetObj = this.map.getEle(countNextPos);
@@ -38,8 +32,14 @@ MoveByHand.prototype.doAction = function() {
 													  });
 				}
 			}
+			else if(this.mainObj.isMeetActionObject('MASTER_EAT', countNextPos)) {  //master eat another object
+				this.eventQueueHandler.throwEvent('EVENT_MASTER_EAT_OBJECT', 
+					                              this.mainObj, 
+					                              null, 
+					                              {targetObj: this.map.getEle(countNextPos)
+					                              });
+			}
 		}
-		this.lock = this.lockMaxTime;
 	}
 };
 

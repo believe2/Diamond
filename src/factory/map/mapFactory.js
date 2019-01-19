@@ -145,6 +145,7 @@ MapFactory.prototype.getListAbstractObj = function() {
 MapFactory.prototype.destroyEle = function(pos) {
 	var getObj = this.map[pos.y][pos.x];
 	if(getObj != null) {
+		getObj.stopAction('ALL');
 		getObj.setIsDelObj(true);
 		delete this.map[pos.y][pos.x];
 		this.map[pos.y][pos.x] = null;

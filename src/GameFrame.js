@@ -351,6 +351,7 @@ GameFrame.prototype.slotStopGame = function() {
 	}
 
 	this.backgroundMusicFactory.stopPlaying();
+	this.eventQueueHandler.stop();
 };
 
 GameFrame.prototype.slotReloadGame = function(loadType, res) {

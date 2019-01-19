@@ -10,8 +10,13 @@ var EventQueueHandler = function(map, objFactory, soundEffectFactory, temp) {
 EventQueueHandler.prototype.start = function() {  
 	this.threadEventHandler = setInterval(this.handleEvent.bind(this), 1);
 };
+//stop running action
+EventQueueHandler.prototype.stop = function(id) {
+	clearInterval(this.threadEventHandler);
+	this.threadEventHandler = null;
+};
 //interface for other game object sending action event
-EventQueueHandler.prototype.throwEvent = function(eventType, obj, action, parms) {  
+EventQueueHandler.prototype.throwEvent = function(eventType, obj, action, parms) {
 	this.eventQueue.push({'type': eventType, 'obj': obj, 'action': action, 'parms': parms});
 };
 //handling all type of event of every game object
@@ -22,37 +27,46 @@ EventQueueHandler.prototype.handleEvent = function() {
 		var obj = this.eventQueue[index].obj;
 		var action = this.eventQueue[index].action;
 		var parms = this.eventQueue[index].parms;
-		switch(eventType) {
-			case 'EVENT_GAME_OBJ_MOVE' :
-				this.move(obj, action, parms);
-				break;
-			case 'EVENT_GAME_OBJ_TRANSFORM_IMG' :
-				this.transformObjImg(obj);
-				break;
-			case 'EVENT_GAME_OBJ_CREATION' :
-				switch(parms.createType) {
-					case 'SINGLE' :
-						this.createSingleObj(parms);
-						break;
-					case 'MULTI' :
-						this.createMultiObj(parms);
-						break;
-				}
-				break;
-			case 'EVENT_GAME_OBJ_DESTROY' :
-				this.destroyObj(parms.pos);
-				break;
-			case 'EVENT_PLAY_EFFECT_SOUND' :
-				this.playEffectSound(parms.soundId);
-				break;
-			case 'EVENT_MASTER_PUSH_OBJECT' :
-				this.push(obj, parms.objNextPos, parms.targetObj, parms.targetNextPos)
-				break;
-			default :
-				console.log('can not handle ' + eventType);
-				break;
-		}
+		this.selectProcessEvent(eventType, obj, action, parms);
 		this.eventQueue.splice(0, 1);
+	}
+};
+EventQueueHandler.prototype.selectProcessEvent = function(eventType, obj, action, parms) {
+	if(obj != null && obj.getIsDelObj()) {
+		return;
+	}
+	switch(eventType) {
+		case 'EVENT_GAME_OBJ_MOVE' :
+			this.move(obj, action, parms);
+			break;
+		case 'EVENT_GAME_OBJ_TRANSFORM_IMG' :
+			this.transformObjImg(obj);
+			break;
+		case 'EVENT_GAME_OBJ_CREATION' :
+			switch(parms.createType) {
+				case 'SINGLE' :
+					this.createSingleObj(parms);
+					break;
+				case 'MULTI' :
+					this.createMultiObj(parms);
+					break;
+			}
+			break;
+		case 'EVENT_GAME_OBJ_DESTROY' :
+			this.destroyObj(parms.pos);
+			break;
+		case 'EVENT_PLAY_EFFECT_SOUND' :
+			this.playEffectSound(parms.soundId);
+			break;
+		case 'EVENT_MASTER_PUSH_OBJECT' :
+			this.push(obj, parms.objNextPos, parms.targetObj, parms.targetNextPos)
+			break;
+		case 'EVENT_MASTER_EAT_OBJECT' :
+			this.eat(obj, parms.targetObj);
+			break;
+		default :
+			console.log('can not handle ' + eventType);
+			break;
 	}
 };
 //Let game object move from beforePos -> nextPos
@@ -75,6 +89,14 @@ EventQueueHandler.prototype.push = function(objMaster, posMaster, objTarget, pos
 	this.map.setEle(beforePos, objMaster.genObjBeforeArea());
 };
 
+EventQueueHandler.prototype.eat = function(objMaster, objTarget) {
+	var masterNextPos = objTarget.getCurPos();
+	var beforePos = objMaster.getCurPos();
+	this.destroyObj(masterNextPos);
+	this.map.setEle(masterNextPos, objMaster);
+	this.map.setEle(beforePos, objMaster.genObjBeforeArea());
+};
+
 EventQueueHandler.prototype.transformObjImg = function(obj) {
 	obj.setNextImg();
 };
@@ -87,7 +109,7 @@ EventQueueHandler.prototype.createSingleObj = function(parms) {
 
 	var oldObj = this.map.getEle(pos);
 	if(oldObj != null) {
-		oldObj.stopAction('ALL');
+		this.destroyObj(pos);
 	}
 	var objNew = this.objFactory.create(this.temp.getArgs(objTypeNew, pos));
 	if(objNew != null) {
