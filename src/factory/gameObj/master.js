@@ -115,7 +115,6 @@ Master.prototype.doNextWhenMove = function() {
 	if(this.isLockMove) {
 		return;
 	}
-	console.log('lock');
 	this.isLockMove = true;
 	setTimeout((function(){ 
 		this.isLockMove = false;
