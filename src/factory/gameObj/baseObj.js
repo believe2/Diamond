@@ -245,3 +245,7 @@ BaseObject.prototype.setIsDelObj = function(isDelObj) {
 BaseObject.prototype.getIsNeedAbstractObjInMap = function() {
 	return this.isNeedAbstractObjInMap;
 };
+
+BaseObject.prototype.doNextWhenMove = function() {
+	//interface
+};

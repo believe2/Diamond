@@ -16,7 +16,7 @@ var GameFrame = function(ctx, canvGame){
 	this.objFactory.setActionFactory(this.actionFactory);
 
 	this.ctx = ctx;
-	this.curStep = 4;
+	this.curStep = 5;
 	this.curMap = null;
 
 	this.cubeWidth = 50;
@@ -31,7 +31,7 @@ var GameFrame = function(ctx, canvGame){
 
 	this.initial();
 
-	this.timerDraw = setInterval(this.slotDrawFrameEvent.bind(this), 0.5);
+	this.timerDraw = setInterval(this.slotDrawFrameEvent.bind(this), 1);
 
 	this.slotGoNextStep();
 };

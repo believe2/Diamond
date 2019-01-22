@@ -8,14 +8,17 @@ MoveByHand.prototype.constructor = MoveByHand;
 
 MoveByHand.prototype.doAction = function() {
 	var isLasting = this.mainObj.getIsMoveLasting();
-	if(!isLasting) {
+	var isLockMove = this.mainObj.getIsLockMove();
+	if(!isLasting || isLockMove) {
 		return;
 	}
 	else {
 		var countNextPos = this.getMasterClickNextPos();
+		var hasMoveNextPos = false;
 		if(countNextPos != null) {
 			if(this.mainObj.isPassby(countNextPos)) {  //master move to next position
 				this.eventQueueHandler.throwEvent('EVENT_GAME_OBJ_MOVE', this.mainObj, this);
+				hasMoveNextPos = true;
 			}
 			else if(this.mainObj.isMeetActionObject('MASTER_PUSH', countNextPos)) {  //master push another object to next position
 				var posGen = new PosGenerator();
@@ -30,6 +33,7 @@ MoveByHand.prototype.doAction = function() {
                                                        targetObj: targetObj,
 													   targetNextPos: targetObjNextPos	
 													  });
+					hasMoveNextPos = true;
 				}
 			}
 			else if(this.mainObj.isMeetActionObject('MASTER_EAT', countNextPos)) {  //master eat another object
@@ -38,6 +42,10 @@ MoveByHand.prototype.doAction = function() {
 					                              null, 
 					                              {targetObj: this.map.getEle(countNextPos)
 					                              });
+				hasMoveNextPos = true;
+			}
+			if(hasMoveNextPos) {
+				this.mainObj.doNextWhenMove();
 			}
 		}
 	}
