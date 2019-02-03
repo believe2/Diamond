@@ -16,7 +16,7 @@ var GameFrame = function(ctx, canvGame){
 	this.objFactory.setActionFactory(this.actionFactory);
 
 	this.ctx = ctx;
-	this.curStep = 5;
+	this.curStep = 4;
 	this.curMap = null;
 
 	this.cubeWidth = 50;
@@ -327,6 +327,9 @@ GameFrame.prototype.slotStartGame = function() {
 };
 
 GameFrame.prototype.slotStopGame = function() {
+	this.eventQueueHandler.stop();
+	this.backgroundMusicFactory.stopPlaying();
+
 	this.isGameStart = false;
 	var indexX = 0;
 	while(indexX <= this.mapFactory.getMaxX()){
@@ -349,9 +352,6 @@ GameFrame.prototype.slotStopGame = function() {
 		listAbstractObj[getIndex].stopAction('ALL');
 		indexX = indexX + 1;
 	}
-
-	this.backgroundMusicFactory.stopPlaying();
-	this.eventQueueHandler.stop();
 };
 
 GameFrame.prototype.slotReloadGame = function(loadType, res) {

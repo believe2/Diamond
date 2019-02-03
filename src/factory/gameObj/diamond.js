@@ -6,7 +6,7 @@ var Diamond = function (args) {
 		                                                mainObj: this
 	                                                  });
 	
-	this.registerAction(2, 230, this.animateGameObject.doAction.bind(this.animateGameObject));
+	this.registerAction(2, 200, this.animateGameObject.doAction.bind(this.animateGameObject));
 };
 
 Diamond.prototype = Object.create(Stone.prototype);

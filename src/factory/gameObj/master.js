@@ -8,7 +8,7 @@ var Master = function (args) {
  	this.burst = {source: ['MONSTER_CUBE', 'BUTTERFLY'], type: this.burstType['3x3_GRID'], prod: null};
  	this.eat = ['DIAMOND'];
  	this.push = ['STONE'];
- 	this.lockMoveTime = 400;
+ 	this.lockMoveTime = 370;
  	this.listEnableMoveDirVector = [new Position(-1,0), new Position(1,0), new Position(0,-1), new Position(0,1)];
 	this.curImage = 12;
 	this.curMoveDirection = this.listEnableMoveDirVector[3];
@@ -30,7 +30,7 @@ var Master = function (args) {
 	this.setController(this.gamePanel);
 
 	this.registerAction(1, 230, this.animateGameObject.doAction.bind(this.animateGameObject));
-    this.registerAction(2, 100, this.moveByHand.doAction.bind(this.moveByHand));
+    this.registerAction(2, 50, this.moveByHand.doAction.bind(this.moveByHand));
     this.registerAction(3, 100, this.meetCheckBurst.doAction.bind(this.meetCheckBurst));
 };
 

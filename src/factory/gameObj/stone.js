@@ -15,7 +15,7 @@ var Stone = function(args) {
 					                                           });
 
 	this.registerAction(0, this.fallArgs.checkFrequency, this.moveFalling.doAction.bind(this.moveFalling));
-	this.registerAction(1, 100, this.meetCheckBurstOtherObject.doAction.bind(this.meetCheckBurstOtherObject));
+	this.registerAction(1, 50, this.meetCheckBurstOtherObject.doAction.bind(this.meetCheckBurstOtherObject));
 
 };
 
