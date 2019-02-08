@@ -1,6 +1,7 @@
 var MainPanel = function(ctx, canvas){
 	this.mapBindFunc = {};
 	this.map = null;
+	this.timerDraw = null;
 
 	this.drawMaxWidth = 12;
 	this.drawMaxHeight = 14;
@@ -9,8 +10,6 @@ var MainPanel = function(ctx, canvas){
 	
 	this.canvas = canvas;
 	this.ctx = ctx;
-
-	this.timerDraw = setInterval(this.drawByCubeMap.bind(this), 1);
 };
 
 MainPanel.prototype.bindOnMouseDownEvent = function(bindFunc) {
@@ -34,7 +33,13 @@ MainPanel.prototype.bindOnMouseUpEvent = function(bindFunc) {
 };
 
 MainPanel.prototype.setMap = function(map) {
+	clearInterval(this.timerDraw);
 	this.map = map;
+	switch(this.map.getMapId()) {
+		case "MAP_2D_CUBE" :
+			this.timerDraw = setInterval(this.drawByCubeMap.bind(this), 1000);
+			break;
+	}
 };
 
 MainPanel.prototype.getCanvas = function() {
@@ -53,17 +58,20 @@ MainPanel.prototype.getCtx = function() {
     口口口口口口口口口
 */
 MainPanel.prototype.drawByCubeMap = function() {
-	var mapWidth = map.getMaxX();
-	var mapHeight = map.getMaxY();
-	var mapLevelNo = map.mapLevelNo();
+	var mapWidth = this.map.getMaxX();
+	var mapHeight = this.map.getMaxY();
+	var mapLevelNo = this.map.getMapLevelNo();
 	var indexX = 0, indexY = 0, indexLv = 0;
 	while(indexX < mapWidth){
 		var indexY = 0;
 		while(indexY < mapHeight) {
-			var pos = new Position(indexX, indexY);
 			indexLv = 0;
 			while(indexLv < mapLevelNo){
-				var ele = map.getEle(pos, indexLv);
+				var pos = new Position(indexX, indexY, indexLv);
+				var ele = this.map.getEle(pos);
+				if(ele == null) {
+					console.log(pos);
+				}
 				this.ctx.drawImage(ele.getCurImg(), pos.x * this.cubeWidth, pos.y * this.cubeHeight, this.cubeWidth, this.cubeHeight);
 				indexLv = indexLv + 1;
 			}

@@ -1,7 +1,7 @@
-var StepSetting = function (listMapFactory) {
+var StepSetting = function (mapFactory) {
 	this.setting = null;
 	this.listObjSetting = null;
-	this.listMapFactory = listMapFactory;
+	this.mapFactory = mapFactory;
 };
 
 StepSetting.prototype.initial = function(setting) {
@@ -44,13 +44,9 @@ StepSetting.prototype.setSettingToAllObject = function() {
 				indexObj = indexObj + 1;
 			}
 
-			var indexMap = 0;
-			while(indexMap < this.listMapFactory.length) {
-				var abstratcObj = this.listMapFactory[indexMap].getListAbstractObj()[setting.id];
-				if(abstratcObj != null) {
-					abstratcObj.setExtraSetting(setting);
-				}
-				indexMap = indexMap + 1;
+			var abstratcObj = this.mapFactory.getListAbstractObj()[setting.id];
+			if(abstratcObj != null) {
+				abstratcObj.setExtraSetting(setting);
 			}
 		}
 		else {

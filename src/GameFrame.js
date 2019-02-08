@@ -1,13 +1,14 @@
 var GameFrame = function(ctx, canvGame){
 	this.gamePanel = new MainPanel(ctx, canvGame);
 
-	this.mapFactory = new MapFactory(-1, "FLOOR");
-	this.floorMapFactory = new MapFactory(0, "OBJECT");
-	this.stepSetting = new StepSetting([this.mapFactory, this.floorMapFactory]);
-	this.mapFileProcessor = new MapFileProcessor({floorMap: this.floorMapFactory, objMap: this.mapFactory}, this.stepSetting);
+	this.mapFactory = new MapFactory("MAP_2D_CUBE");
+	//this.floorMapFactory = new MapFactory(0, "MAP_2D_CUBE");
+	this.stepSetting = new StepSetting(this.mapFactory);
+	//this.mapFileProcessor = new MapFileProcessor({floorMap: this.floorMapFactory, objMap: this.mapFactory}, this.stepSetting);
 
 	this.objFactory = new ObjFactory(new ImageFactory('img/'), this.mapFactory, this.gamePanel);
 	this.mapFactory.setObjFactory(this.objFactory);
+	this.gamePanel.setMap(this.mapFactory);
 	this.soundEffectFactory =  new SoundEffectFactory();
 	this.backgroundMusicFactory = new BackgroundMusicFactory();
 	this.languageFactory = new LanguageFactory();
@@ -16,7 +17,7 @@ var GameFrame = function(ctx, canvGame){
 	this.objFactory.setActionFactory(this.actionFactory);
 
 	this.ctx = ctx;
-	this.curStep = 4;
+	this.curStep = 0;
 	this.curMap = null;
 
 	this.cubeWidth = 50;
@@ -30,8 +31,6 @@ var GameFrame = function(ctx, canvGame){
 	this.drawMaxHeight = 14;
 
 	this.initial();
-
-	this.timerDraw = setInterval(this.slotDrawFrameEvent.bind(this), 1);
 
 	this.slotGoNextStep();
 };
@@ -54,10 +53,9 @@ GameFrame.prototype.initial = function() {
 
 GameFrame.prototype.loadMap = function(loadType, res) {
 	var self = this;
-	var funcInitialStep = function() {
-		self.mapFileProcessor.reloadRawFile();
+	var funcInitialStep = function(listMapRawData, otherStepSetting) {
 		self.mapFactory.createObjByMap(self.objFactory, self.getArgs(null, null));
-		self.floorMapFactory.createObjByMap(self.objFactory, self.getArgs(null, null));
+		self.stepSetting.initial(otherStepSetting);
 		self.stepSetting.setSettingToAllObject();
 		self.eatDiamondTargetNum = self.stepSetting.getValue('diamond_target');
 		self.timeLimit = self.stepSetting.getValue('time_limit');
@@ -66,7 +64,7 @@ GameFrame.prototype.loadMap = function(loadType, res) {
 	self.curEatDiamondNum = 0;
 	switch(loadType) {
 		case 'FROM_FILE': 
-			self.mapFileProcessor.loadMapFromFile(res, funcInitialStep);
+			self.mapFactory.loadStepInfoFromFile(res, funcInitialStep);
 			break;
 		case 'SYNC':
 			self.mapFileProcessor.loadMapJsonObj(res);
@@ -250,6 +248,7 @@ GameFrame.prototype.slotBurstEvent = function(listPos, objIdProd) {
 	}
 };
 
+/*
 GameFrame.prototype.drawOneElement = function(pos) {
 	//draw floor
 	var ele = this.floorMapFactory.getEle(pos);
@@ -278,7 +277,7 @@ GameFrame.prototype.slotDrawFrameEvent = function() {
 	}
 
 	//draw arrow hint
-	/*
+	
 	if(this.arrowHint.getIsPaint()) {
 		var master = this.mapFactory.getOneOfObj("MASTER");
 		if(master != null) {
@@ -287,8 +286,9 @@ GameFrame.prototype.slotDrawFrameEvent = function() {
 			this.arrowHint.paint(panelPos, this.cubeWidth, this.cubeHeight, this.ctx);
 		}
 	}
-	*/
+	
 };
+*/
 
 GameFrame.prototype.slotPlayBackgroundMusic = function() {
 	if(this.isGameStart) {

@@ -1,16 +1,33 @@
-var MapFactory = function(mapExpandDefaultEleId, mapId) {
-	this.id = mapId;
-	this.mapExpandDefaultEleId = mapExpandDefaultEleId;
+var MapFactory = function(mapId) {
+	this.mapFileProcessor = new MapFileProcessor();
+	this.mapId = mapId;
+	this.mapExpandDefaultEleId = -1;
+	this.mapRawData = null;
 	this.map = null;
 	this.objFactory = null;
 	this.listAbstractObj = [];
-	this.width = -1;
-	this.height = -1;
-	this.listObjSetting = null;
+	this.stepSetting = null;
 };
 
 MapFactory.prototype.setObjFactory = function(objFactory) {
 	this.objFactory = objFactory;
+};
+
+MapFactory.prototype.getMapId = function() {
+	return this.mapId;
+};
+
+MapFactory.prototype.getMapLevelNo = function() {
+	return Object.keys(this.map).length;
+};
+
+MapFactory.prototype.loadStepInfoFromFile = function(filePath, callBackFunc) {
+	var callBackFuncResetData = function(listMapRawData, otherStepSetting) {
+		this.mapRawData = listMapRawData;
+		this.stepSetting = otherStepSetting;
+		callBackFunc(this.mapRawData, this.stepSetting);
+	};
+	this.mapFileProcessor.loadMapFromFile(filePath, callBackFuncResetData.bind(this));
 };
 
 MapFactory.prototype.loadGivenMap = function(rawMap) {
@@ -37,36 +54,41 @@ MapFactory.prototype.static_getObjInfo = function(pos) {
 };
 
 MapFactory.prototype.createObjByMap = function(objFactory, args) {
-	this.map = (new Space()).gen2DimArray(this.height, this.width);
-	this.listAbstractObj = [];
-	var indexX = 0;
-	while(indexX <= this.getMaxX()){
-		var indexY = 0;
-		while(indexY <= this.getMaxY()) {
-			var pos = new Position(indexX, indexY);
-			var value = this._map[pos.y][pos.x];
-			args.id = value;
-			args.pos = pos;
-			var obj = objFactory.create(args);
-			this.setEle(pos, obj);
-			if(obj != null && obj.getIsNeedAbstractObjInMap()) {
-				this.setAbstractEle(obj.getId());
+	this.map = [];
+	for(keyMap in this.mapRawData) {
+		var width = this.mapRawData[keyMap][0].length;
+		var height = this.mapRawData[keyMap].length;
+		this.map[keyMap] = (new Space()).gen2DimArray(height, width);
+		this.listAbstractObj = [];
+		var indexX = 0;
+		while(indexX < width){
+			var indexY = 0;
+			while(indexY < height) {
+				var pos = new Position(indexX, indexY, keyMap);
+				var value = this.mapRawData[keyMap][pos.y][pos.x];
+				args.id = value;
+				args.pos = pos;
+				var obj = objFactory.create(args);
+				this.setEle(pos, obj);
+				if(obj != null && obj.getIsNeedAbstractObjInMap()) {
+					this.setAbstractEle(obj.getId());
+				}
+				indexY = indexY + 1;
 			}
-			indexY = indexY + 1;
+			indexX = indexX + 1;
 		}
-		indexX = indexX + 1;
 	}
 };
 
 MapFactory.prototype.isInMapBoundary = function(pos) {
 	return (pos != null && this.map != null) &&
-		   (pos.x > -1 && pos.x < this.map[0].length) &&
-		   (pos.y > -1 && pos.y < this.map.length);
+		   (pos.x > -1 && pos.x < this.map[pos.z][0].length) &&
+		   (pos.y > -1 && pos.y < this.map[pos.z].length);
 };
 
 MapFactory.prototype.getEle = function(pos) {
 	if(this.isInMapBoundary(pos)) {
-		return this.map[pos.y][pos.x];
+		return this.map[pos.z][pos.y][pos.x];
 	}
 	else {
 		return null;
@@ -123,7 +145,7 @@ MapFactory.prototype.setEle = function(pos, ele) {
 		if(ele != null) {
 			ele.update(pos, null);
 		}
-		this.map[pos.y][pos.x] = ele;
+		this.map[pos.z][pos.y][pos.x] = ele;
 	}
 };
 
@@ -157,11 +179,17 @@ MapFactory.prototype.getId = function() {
 };
 
 MapFactory.prototype.getMaxX = function() {
-	return this.width - 1;
+	if(this.map == null) {
+		return -1;
+	}
+	return this.map[0][0].length;
 };
 
 MapFactory.prototype.getMaxY = function() {
-	return this.height - 1;
+	if(this.map == null) {
+		return -1;
+	}
+	return this.map[0].length;
 };
 
 MapFactory.prototype.getAllObjCanPassPos = function(objId) {
