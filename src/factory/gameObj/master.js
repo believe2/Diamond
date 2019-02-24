@@ -9,7 +9,7 @@ var Master = function (args) {
  	this.eat = ['DIAMOND'];
  	this.push = ['STONE'];
  	this.lockMoveTime = 370;
- 	this.listEnableMoveDirVector = [new Position(-1,0), new Position(1,0), new Position(0,-1), new Position(0,1)];
+ 	this.listEnableMoveDirVector = [new Position(-1,0,0), new Position(1,0,0), new Position(0,-1,0), new Position(0,1,0)];
 	this.curImage = 12;
 	this.curMoveDirection = this.listEnableMoveDirVector[3];
 
@@ -57,6 +57,7 @@ Master.prototype.setController = function(panel) {
 
 Master.prototype.letMasterMove = function(clickPos) {
 	var posGen = new PosGenerator();
+	clickPos.z = this.curPos.z;
 	var nextMoveDirVector = posGen.isMoveUnitVectorInCheckList(this.curPos, clickPos, this.listEnableMoveDirVector);
 	if(nextMoveDirVector != null) {
 		this.isMoveLasting = true;

@@ -20,7 +20,7 @@ MoveFalling.prototype.nextPos = function() {
 	this.beforePos = this.mainObj.curPos;
 	var nextPos = null;
 	//check down
-	var nextCand = new Position(this.mainObj.curPos.x, this.mainObj.curPos.y + 1);
+	var nextCand = new Position(this.mainObj.curPos.x, this.mainObj.curPos.y + 1, this.mainObj.curPos.z);
 	if(this.mainObj.isPassby(nextCand)) {
 		nextPos = nextCand;
 		this.fallDirection = 'DOWN';
@@ -28,8 +28,8 @@ MoveFalling.prototype.nextPos = function() {
 	if(this.mainObj.isCanFallToLRSide()) {
 		//check left
 		if(nextPos == null) {
-			var leftDownTarget = new Position(this.mainObj.curPos.x - 1, this.mainObj.curPos.y + 1);
-			nextCand = new Position(this.mainObj.curPos.x - 1, this.mainObj.curPos.y);
+			var leftDownTarget = new Position(this.mainObj.curPos.x - 1, this.mainObj.curPos.y + 1, this.mainObj.curPos.z);
+			nextCand = new Position(this.mainObj.curPos.x - 1, this.mainObj.curPos.y, this.mainObj.curPos.z);
 			if(this.mainObj.isPassby(leftDownTarget) && this.mainObj.isPassby(nextCand)) {
 				nextPos = nextCand;
 				this.fallDirection = 'LEFT';
@@ -37,8 +37,8 @@ MoveFalling.prototype.nextPos = function() {
 		}
 		//check right
 		if(nextPos == null) {
-			var rightDownTarget = new Position(this.mainObj.curPos.x + 1, this.mainObj.curPos.y + 1);
-			nextCand = new Position(this.mainObj.curPos.x + 1, this.mainObj.curPos.y);
+			var rightDownTarget = new Position(this.mainObj.curPos.x + 1, this.mainObj.curPos.y + 1, this.mainObj.curPos.z);
+			nextCand = new Position(this.mainObj.curPos.x + 1, this.mainObj.curPos.y, this.mainObj.curPos.z);
 			if(this.mainObj.isPassby(rightDownTarget) && this.mainObj.isPassby(nextCand)) {
 				nextPos = nextCand;
 				this.fallDirection = 'RIGHT';

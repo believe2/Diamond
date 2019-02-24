@@ -5,6 +5,9 @@ var StepSetting = function (mapFactory) {
 };
 
 StepSetting.prototype.initial = function(setting) {
+	if(setting == null) {
+		return;
+	}
 	this.setting = setting;
 	this.listObjSetting = this.setting.obj_setting;
 };

@@ -40,7 +40,7 @@ Stone.prototype.getBurstOtherObject = function() {
 };
 
 Stone.prototype.isCanFallToLRSide = function() {
-	var downObjId = this.map.getEleId(new Position(this.curPos.x, this.curPos.y + 1));
+	var downObjId = this.map.getEleId(new Position(this.curPos.x, this.curPos.y + 1, this.curPos.z));
 	var index = 0, isOk = false;
 	while(!isOk && index < this.listFallMeetObjCanGoLRSide.length) {
 		if(this.listFallMeetObjCanGoLRSide[index] == downObjId) {

@@ -17,10 +17,6 @@ MapFactory.prototype.getMapId = function() {
 	return this.mapId;
 };
 
-MapFactory.prototype.getMapLevelNo = function() {
-	return Object.keys(this.map).length;
-};
-
 MapFactory.prototype.loadStepInfoFromFile = function(filePath, callBackFunc) {
 	var callBackFuncResetData = function(listMapRawData, otherStepSetting) {
 		this.mapRawData = listMapRawData;
@@ -54,30 +50,21 @@ MapFactory.prototype.static_getObjInfo = function(pos) {
 };
 
 MapFactory.prototype.createObjByMap = function(objFactory, args) {
-	this.map = [];
-	for(keyMap in this.mapRawData) {
-		var width = this.mapRawData[keyMap][0].length;
-		var height = this.mapRawData[keyMap].length;
-		this.map[keyMap] = (new Space()).gen2DimArray(height, width);
-		this.listAbstractObj = [];
-		var indexX = 0;
-		while(indexX < width){
-			var indexY = 0;
-			while(indexY < height) {
-				var pos = new Position(indexX, indexY, keyMap);
-				var value = this.mapRawData[keyMap][pos.y][pos.x];
-				args.id = value;
-				args.pos = pos;
-				var obj = objFactory.create(args);
-				this.setEle(pos, obj);
-				if(obj != null && obj.getIsNeedAbstractObjInMap()) {
-					this.setAbstractEle(obj.getId());
-				}
-				indexY = indexY + 1;
-			}
-			indexX = indexX + 1;
+	var width = this.mapRawData[0][0].length;
+	var height = this.mapRawData[0].length;
+	var level = Object.keys(this.mapRawData).length;
+	this.map = (new Space()).gen3DimArray(height, width, level);
+	this.listAbstractObj = [];
+	var callbackFuncObjCreation = function(pos, ele) {
+		args.id = this.mapRawData[pos.z][pos.y][pos.x];
+		args.pos = pos;
+		var obj = objFactory.create(args);
+		this.setEle(pos, obj);
+		if(obj != null && obj.getIsNeedAbstractObjInMap()) {
+			this.setAbstractEle(obj.getId());
 		}
-	}
+	};
+	this.processMapEle(callbackFuncObjCreation.bind(this));
 };
 
 MapFactory.prototype.isInMapBoundary = function(pos) {
@@ -96,8 +83,8 @@ MapFactory.prototype.getEle = function(pos) {
 };
 
 MapFactory.prototype.getEleId = function(pos) {
-	if(this.isInMapBoundary(pos) && this.map[pos.y][pos.x] != null) {
-		return this.map[pos.y][pos.x].getId();
+	if(this.isInMapBoundary(pos) && this.map[pos.z][pos.y][pos.x] != null) {
+		return this.map[pos.z][pos.y][pos.x].getId();
 	}
 	else {
 		return null;
@@ -165,17 +152,13 @@ MapFactory.prototype.getListAbstractObj = function() {
 };
 
 MapFactory.prototype.destroyEle = function(pos) {
-	var getObj = this.map[pos.y][pos.x];
+	var getObj = this.map[pos.z][pos.y][pos.x];
 	if(getObj != null) {
 		getObj.stopAction('ALL');
 		getObj.setIsDelObj(true);
-		delete this.map[pos.y][pos.x];
-		this.map[pos.y][pos.x] = null;
+		delete this.map[pos.z][pos.y][pos.x];
+		this.map[pos.z][pos.y][pos.x] = null;
 	}
-};
-
-MapFactory.prototype.getId = function() {
-	return this.id;
 };
 
 MapFactory.prototype.getMaxX = function() {
@@ -190,6 +173,13 @@ MapFactory.prototype.getMaxY = function() {
 		return -1;
 	}
 	return this.map[0].length;
+};
+
+MapFactory.prototype.getMapLevelNo = function() {
+	if(this.map == null) {
+		return -1;
+	}
+	return this.map.length;
 };
 
 MapFactory.prototype.getAllObjCanPassPos = function(objId) {
@@ -290,4 +280,32 @@ MapFactory.prototype.changeMapDimension = function(width, height, idToNoTransfor
 	this.width = this._map[0].length;
 	this.height = this._map.length;
 	this.createObjByMap(objFactory, args);
+};
+
+MapFactory.prototype.processMapEle = function(callBackFuncEle, isProcessAbstractEle) {
+	//process each element in MAP
+	var mapWidth = this.getMaxX();
+	var mapHeight = this.getMaxY();
+	var mapLevelNo = this.getMapLevelNo();
+	var indexX = 0, indexY = 0, indexLv = 0;
+	while(indexX < mapWidth){
+		var indexY = 0;
+		while(indexY < mapHeight) {
+			indexLv = 0;
+			while(indexLv < mapLevelNo){
+				var pos = new Position(indexX, indexY, indexLv);
+				var ele = this.getEle(pos);
+				callBackFuncEle(pos, ele);
+				indexLv = indexLv + 1;
+			}
+			indexY = indexY + 1;
+		}
+		indexX = indexX + 1;
+	}
+	//process each abstract element
+	if(isProcessAbstractEle) {
+		for(keys in this.listAbstractObj) {
+			callBackFuncEle(null, ele);
+		}
+	}
 };

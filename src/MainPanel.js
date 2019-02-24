@@ -1,6 +1,6 @@
 var MainPanel = function(ctx, canvas){
 	this.mapBindFunc = {};
-	this.map = null;
+	this.mapFactory = null;
 	this.timerDraw = null;
 
 	this.drawMaxWidth = 12;
@@ -32,12 +32,12 @@ MainPanel.prototype.bindOnMouseUpEvent = function(bindFunc) {
 	this.canvas.addEventListener('mouseup', this.mapBindFunc.MouseUp, false);
 };
 
-MainPanel.prototype.setMap = function(map) {
+MainPanel.prototype.setMap = function(mapFactory) {
 	clearInterval(this.timerDraw);
-	this.map = map;
-	switch(this.map.getMapId()) {
+	this.mapFactory = mapFactory;
+	switch(this.mapFactory.getMapId()) {
 		case "MAP_2D_CUBE" :
-			this.timerDraw = setInterval(this.drawByCubeMap.bind(this), 1000);
+			this.timerDraw = setInterval(this.drawByCubeMap.bind(this), 5);
 			break;
 	}
 };
@@ -58,25 +58,11 @@ MainPanel.prototype.getCtx = function() {
     口口口口口口口口口
 */
 MainPanel.prototype.drawByCubeMap = function() {
-	var mapWidth = this.map.getMaxX();
-	var mapHeight = this.map.getMaxY();
-	var mapLevelNo = this.map.getMapLevelNo();
-	var indexX = 0, indexY = 0, indexLv = 0;
-	while(indexX < mapWidth){
-		var indexY = 0;
-		while(indexY < mapHeight) {
-			indexLv = 0;
-			while(indexLv < mapLevelNo){
-				var pos = new Position(indexX, indexY, indexLv);
-				var ele = this.map.getEle(pos);
-				if(ele == null) {
-					console.log(pos);
-				}
-				this.ctx.drawImage(ele.getCurImg(), pos.x * this.cubeWidth, pos.y * this.cubeHeight, this.cubeWidth, this.cubeHeight);
-				indexLv = indexLv + 1;
-			}
-			indexY = indexY + 1;
+	var callBackFuncDrawImg = function(pos, ele) {
+		if(ele == null) {
+			return;
 		}
-		indexX = indexX + 1;
-	}
+		this.ctx.drawImage(ele.getCurImg(), pos.x * this.cubeWidth, pos.y * this.cubeHeight, this.cubeWidth, this.cubeHeight);
+	};
+	this.mapFactory.processMapEle(callBackFuncDrawImg.bind(this));
 }

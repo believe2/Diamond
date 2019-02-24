@@ -248,48 +248,6 @@ GameFrame.prototype.slotBurstEvent = function(listPos, objIdProd) {
 	}
 };
 
-/*
-GameFrame.prototype.drawOneElement = function(pos) {
-	//draw floor
-	var ele = this.floorMapFactory.getEle(pos);
-	if(ele != null) {
-		this.ctx.drawImage(ele.getCurImg(), (pos.x - this.drawStartPos.x) * this.cubeWidth, 
-			(pos.y - this.drawStartPos.y) * this.cubeHeight, this.cubeWidth, this.cubeHeight);
-	}
-	//draw object
-	ele = this.mapFactory.getEle(pos);
-	if(ele != null) {
-		this.ctx.drawImage(ele.getCurImg(), (pos.x - this.drawStartPos.x) * this.cubeWidth, 
-			(pos.y - this.drawStartPos.y) * this.cubeHeight, this.cubeWidth, this.cubeHeight);
-	}
-};
-
-GameFrame.prototype.slotDrawFrameEvent = function() {
-	var indexX = this.drawStartPos.x;
-	while(indexX < this.drawStartPos.x + this.drawMaxWidth){
-		var indexY = this.drawStartPos.y;
-		while(indexY < this.drawStartPos.y + this.drawMaxHeight) {
-			var pos = new Position(indexX, indexY);
-			this.drawOneElement(pos);
-			indexY = indexY + 1;
-		}
-		indexX = indexX + 1;
-	}
-
-	//draw arrow hint
-	
-	if(this.arrowHint.getIsPaint()) {
-		var master = this.mapFactory.getOneOfObj("MASTER");
-		if(master != null) {
-			var masterPos = master.getCurPos();
-			var panelPos = new Position(masterPos.x - this.drawStartPos.x, masterPos.y - this.drawStartPos.y);
-			this.arrowHint.paint(panelPos, this.cubeWidth, this.cubeHeight, this.ctx);
-		}
-	}
-	
-};
-*/
-
 GameFrame.prototype.slotPlayBackgroundMusic = function() {
 	if(this.isGameStart) {
 		this.backgroundMusicFactory.playSound('END_MUSIC');
@@ -300,26 +258,10 @@ GameFrame.prototype.slotStartGame = function() {
 	if(this.isGameStart) {
 		return;
 	}
-	var indexX = 0;
-	while(indexX <= this.mapFactory.getMaxX()){
-		var indexY = 0;
-		while(indexY <= this.mapFactory.getMaxY()) {
-			var obj = this.mapFactory.getEle(new Position(indexX, indexY));
-			if(obj != null) {
-				obj.startAction('ALL');
-			}
-			indexY = indexY + 1;
-		}
-		indexX = indexX + 1;
-	}
-	indexX = 0;
-	var listAbstractObj = this.mapFactory.getListAbstractObj();
-	var listIndex = Object.keys(listAbstractObj);
-	while(indexX < listIndex.length) {
-		var getIndex = listIndex[indexX];
-		listAbstractObj[getIndex].startAction('ALL');
-		indexX = indexX + 1;
-	}
+	var callBackFuncStartObjAction = function(pos, ele) {
+		ele.startAction('ALL');
+	};
+	this.mapFactory.processMapEle(callBackFuncStartObjAction.bind(this), true);
 	this.clockTime.start();
 	this.isGameStart = true;
 	this.arrowHint.setIsPaint(true);
@@ -329,29 +271,16 @@ GameFrame.prototype.slotStartGame = function() {
 GameFrame.prototype.slotStopGame = function() {
 	this.eventQueueHandler.stop();
 	this.backgroundMusicFactory.stopPlaying();
-
 	this.isGameStart = false;
-	var indexX = 0;
-	while(indexX <= this.mapFactory.getMaxX()){
-		var indexY = 0;
-		while(indexY <= this.mapFactory.getMaxY()) {
-			var obj = this.mapFactory.getEle(new Position(indexX, indexY));
-			if(obj != null) {
-				obj.stopAction('ALL');
-			}
-			indexY = indexY + 1;
-		}
-		indexX = indexX + 1;
-	}
 
-	indexX = 0;
-	var listAbstractObj = this.mapFactory.getListAbstractObj();
-	var listIndex = Object.keys(listAbstractObj);
-	while(indexX < listIndex.length) {
-		var getIndex = listIndex[indexX];
-		listAbstractObj[getIndex].stopAction('ALL');
-		indexX = indexX + 1;
-	}
+	var callBackFuncStopObjAction = function(pos, ele) {
+		if(ele == null) {
+			return;
+		}
+		ele.stopAction('ALL');
+	};
+
+	this.mapFactory.processMapEle(callBackFuncStopObjAction.bind(this), true);
 };
 
 GameFrame.prototype.slotReloadGame = function(loadType, res) {

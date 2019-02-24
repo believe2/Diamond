@@ -82,7 +82,7 @@ BaseObject.prototype.setGenWay = function(setGenWay) {
 
 //check this position whether this object can go through
 BaseObject.prototype.isPassby = function(pos) {
-	var objInfo = this.funcGetObjInfoByPos(pos);
+	var objInfo = this.map.getEle(pos);
 	var isOk = false;
 	if(objInfo == null) {
 		isOk = true;
@@ -135,7 +135,8 @@ BaseObject.prototype.isTouchObj = function(objId) {
 	var index = 0;
 	var isTouch = false;
 	while(!isTouch && index < listCheckPos.length) {
-		if(this.funcGetObjInfoByPos(listCheckPos[index]) != null && this.funcGetObjInfoByPos(listCheckPos[index]).id == objId) {
+		//if(this.funcGetObjInfoByPos(listCheckPos[index]) != null && this.funcGetObjInfoByPos(listCheckPos[index]).id == objId) {
+		if(this.map.getEle(listCheckPos[index]) != null && this.map.getEle(listCheckPos[index]).getId() == objId) {
 			isTouch = true;
 		}
 		index = index + 1;
