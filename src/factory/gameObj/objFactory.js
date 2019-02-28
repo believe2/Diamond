@@ -70,13 +70,4 @@
  		list.push(ele);
  	}
  	return list;
- }
-
- ObjFactory.prototype.getNumById = function(id) {
- 	for(key in this.listObj) {
- 		if(this.listObj[key] == id) {
- 			return key;
- 		}
- 	}
- 	return null;
- }
+};

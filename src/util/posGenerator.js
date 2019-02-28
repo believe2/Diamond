@@ -26,6 +26,9 @@ PosGenerator.prototype.posbaseInputVector = function(posbase, listVector) {
 	var listRes = [];
 	var index = 0;
 	while(index < listVector.length) {
+		if(listVector[index].z == null) {
+			listVector[index].z = 0;
+		}
 		listRes.push(new Position(posbase.x + listVector[index].x, posbase.y + listVector[index].y, posbase.z + listVector[index].z));
 		index = index + 1;
 	}

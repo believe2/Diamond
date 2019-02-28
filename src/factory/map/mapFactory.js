@@ -26,29 +26,6 @@ MapFactory.prototype.loadStepInfoFromFile = function(filePath, callBackFunc) {
 	this.mapFileProcessor.loadMapFromFile(filePath, callBackFuncResetData.bind(this));
 };
 
-MapFactory.prototype.loadGivenMap = function(rawMap) {
-	this._map = rawMap;
-	this.width = rawMap[0].length;
-	this.height = rawMap.length;
-};
-
-MapFactory.prototype.static_getObjInfo = function(pos) {
-	var obj = this.getEle(pos);
-	if(obj != null) {
-		return {id: obj.getId(),
-				genWay: obj.getGenWay(),
-				funcIsPassby: obj.isPassby.bind(obj),
-				funcPosCanPassby: obj.getPosCanPass.bind(obj),
-				funcIsFalling: obj.isFalling != null ? obj.isFalling.bind(obj) : null};
-	}
-	else if(!this.isInMapBoundary(pos)) {
-		return "ERROR";
-	}
-	else {
-		return null;
-	}
-};
-
 MapFactory.prototype.createObjByMap = function(objFactory, args) {
 	var width = this.mapRawData[0][0].length;
 	var height = this.mapRawData[0].length;
@@ -92,20 +69,13 @@ MapFactory.prototype.getEleId = function(pos) {
 }
 
 MapFactory.prototype.getOneOfObj = function(objId) {
-	var indexX = 0;
 	var result = null;
-	while(result == null && indexX <= this.getMaxX()){
-		var indexY = 0;
-		while(result == null && indexY <= this.getMaxY()) {
-			var pos = new Position(indexX, indexY);
-			var obj = this.getEle(pos);
-			if(obj != null && obj.getId() == objId) {
-				result = obj;
-			}
-			indexY = indexY + 1;
+	var callbackfuncCheckObj = function(pos, ele) {
+		if(ele != null && ele.getId() == objId) {
+			result = ele;
 		}
-		indexX = indexX + 1;
-	}
+	};
+	this.processMapEle(callbackfuncCheckObj.bind(this));
 	return result;
 };
 

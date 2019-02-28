@@ -24,7 +24,7 @@ Stone.prototype.superClass = Object.create(BaseObject.prototype);
 Stone.prototype.constructor = Stone;
 
 Stone.prototype.getBurstOtherObject = function() {
-	var checkPos = new Position(this.curPos.x, this.curPos.y + 1);
+	var checkPos = new Position(this.curPos.x, this.curPos.y + 1, this.curPos.z);
 	var listBurstTargetObj = []
 	var index = 0;
 	while(index < this.listFallBurstObj.length) {

@@ -2,9 +2,7 @@ var GameFrame = function(ctx, canvGame){
 	this.gamePanel = new MainPanel(ctx, canvGame);
 
 	this.mapFactory = new MapFactory("MAP_2D_CUBE");
-	//this.floorMapFactory = new MapFactory(0, "MAP_2D_CUBE");
 	this.stepSetting = new StepSetting(this.mapFactory);
-	//this.mapFileProcessor = new MapFileProcessor({floorMap: this.floorMapFactory, objMap: this.mapFactory}, this.stepSetting);
 
 	this.objFactory = new ObjFactory(new ImageFactory('img/'), this.mapFactory, this.gamePanel);
 	this.mapFactory.setObjFactory(this.objFactory);
@@ -90,12 +88,10 @@ GameFrame.prototype.getArgs = function(argId, argPos) {
 		listCanPass: null,
 		listImage: null,
 		pos: argPos,
-		eventQueueHandler: this.eventQueueHandler,
 		actionFactory: this.actionFactory,
 		mapDimension: {maxX: this.mapFactory.getMaxX(), maxY: this.mapFactory.getMaxY()},
 		bindFuncMove: this.slotObjMoveEvent.bind(this),
 		bindFuncMove2: this.slotObjPosMoveEvent.bind(this),
-		bindFuncGetObjInfoByPos: this.mapFactory.static_getObjInfo.bind(this.mapFactory),
 		bindFuncCreate: this.slotCreateObjEvent.bind(this),
 		bindFuncTriggerObjFunc: this.slotCallObjFunc.bind(this),
 		bindFuncChangeObj: this.slotChangeObjEvent.bind(this),
