@@ -100,7 +100,7 @@ Master.prototype.isMeetActionObject = function(type, position) {
 			listCheck = this.push;
 			break;
 	}
-	var targetObj = this.funcGetObjInfoByPos(position).id;
+	var targetObj = this.map.getEleId(position);
 	var isMeetTarget = false;
 	var index = 0;
 	while(!isMeetTarget && index < listCheck.length) {

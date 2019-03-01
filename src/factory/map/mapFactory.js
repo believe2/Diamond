@@ -9,7 +9,7 @@ var MapFactory = function(mapId) {
 	this.stepSetting = null;
 };
 
-MapFactory.prototype.setObjFactory = function(objFactory) {
+MapFactory.prototype.initialObj = function(objFactory) {
 	this.objFactory = objFactory;
 };
 
@@ -26,16 +26,14 @@ MapFactory.prototype.loadStepInfoFromFile = function(filePath, callBackFunc) {
 	this.mapFileProcessor.loadMapFromFile(filePath, callBackFuncResetData.bind(this));
 };
 
-MapFactory.prototype.createObjByMap = function(objFactory, args) {
+MapFactory.prototype.createObjByMap = function() {
 	var width = this.mapRawData[0][0].length;
 	var height = this.mapRawData[0].length;
 	var level = Object.keys(this.mapRawData).length;
 	this.map = (new Space()).gen3DimArray(height, width, level);
 	this.listAbstractObj = [];
 	var callbackFuncObjCreation = function(pos, ele) {
-		args.id = this.mapRawData[pos.z][pos.y][pos.x];
-		args.pos = pos;
-		var obj = objFactory.create(args);
+		var obj = this.objFactory.create(this.mapRawData[pos.z][pos.y][pos.x]);
 		this.setEle(pos, obj);
 		if(obj != null && obj.getIsNeedAbstractObjInMap()) {
 			this.setAbstractEle(obj.getId());
@@ -249,7 +247,7 @@ MapFactory.prototype.changeMapDimension = function(width, height, idToNoTransfor
 	this._map = orgMap;
 	this.width = this._map[0].length;
 	this.height = this._map.length;
-	this.createObjByMap(objFactory, args);
+	this.createObjByMap(args);
 };
 
 MapFactory.prototype.processMapEle = function(callBackFuncEle, isProcessAbstractEle) {

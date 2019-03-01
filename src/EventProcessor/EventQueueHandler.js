@@ -1,10 +1,12 @@
-var EventQueueHandler = function(map, objFactory, soundEffectFactory, temp) {
+var EventQueueHandler = function() {
 	this.eventQueue = new Array();
-	this.map = map;
-	this.temp = temp;
+	this.threadEventHandler = null;
+};
+
+EventQueueHandler.prototype.initialObj = function(mapFactory, objFactory, soundEffectFactory) {
+	this.map = mapFactory;
 	this.objFactory = objFactory;
 	this.soundEffectFactory = soundEffectFactory;
-	this.threadEventHandler = null;
 };
 //start thread to listen eventQueue
 EventQueueHandler.prototype.start = function() {  
@@ -111,7 +113,7 @@ EventQueueHandler.prototype.createSingleObj = function(parms) {
 	if(oldObj != null) {
 		this.destroyObj(pos);
 	}
-	var objNew = this.objFactory.create(this.temp.getArgs(objTypeNew, pos));
+	var objNew = this.objFactory.create(objTypeNew);
 	if(objNew != null) {
 		objNew.setGenWay(objNew.GEN_WAY_FROM_OBJECT);
 		this.map.setEle(pos, objNew);

@@ -1,35 +1,26 @@
 var GameFrame = function(ctx, canvGame){
 	this.gamePanel = new MainPanel(ctx, canvGame);
-
 	this.mapFactory = new MapFactory("MAP_2D_CUBE");
-	this.stepSetting = new StepSetting(this.mapFactory);
-
-	this.objFactory = new ObjFactory(new ImageFactory('img/'), this.mapFactory, this.gamePanel);
-	this.mapFactory.setObjFactory(this.objFactory);
-	this.gamePanel.setMap(this.mapFactory);
+	this.stepSetting = new StepSetting();
+	this.imgFactory = new ImageFactory('img/');
+	this.objFactory = new ObjFactory();
 	this.soundEffectFactory =  new SoundEffectFactory();
 	this.backgroundMusicFactory = new BackgroundMusicFactory();
 	this.languageFactory = new LanguageFactory();
-	this.eventQueueHandler = new EventQueueHandler(this.mapFactory, this.objFactory, this.soundEffectFactory, this);
-	this.actionFactory = new ActionFactory(this.eventQueueHandler);
-	this.objFactory.setActionFactory(this.actionFactory);
+	this.eventQueueHandler = new EventQueueHandler();
+	this.actionFactory = new ActionFactory();
 
-	this.ctx = ctx;
+	this.stepSetting.initialObj(this.mapFactory);
+	this.objFactory.initialObj(this.gamePanel, this.imgFactory, this.mapFactory, this.actionFactory);
+	this.eventQueueHandler.initialObj(this.mapFactory, this.objFactory, this.soundEffectFactory);
+	this.mapFactory.initialObj(this.objFactory);
+	this.actionFactory.initialObj(this.eventQueueHandler);
+	this.gamePanel.setMap(this.mapFactory);
+
 	this.curStep = 0;
-	this.curMap = null;
-
-	this.cubeWidth = 50;
-	this.cubeHeight = 50;
-	this.eatDiamondTargetNum = 15;
-	this.timeLimit = 10;
 	this.isGameStart = false;
 
-	this.drawStartPos = new Position(0, 0);
-	this.drawMaxWidth = 12;
-	this.drawMaxHeight = 14;
-
 	this.initial();
-
 	this.slotGoNextStep();
 };
 
@@ -52,7 +43,7 @@ GameFrame.prototype.initial = function() {
 GameFrame.prototype.loadMap = function(loadType, res) {
 	var self = this;
 	var funcInitialStep = function(listMapRawData, otherStepSetting) {
-		self.mapFactory.createObjByMap(self.objFactory, self.getArgs(null, null));
+		self.mapFactory.createObjByMap();
 		self.stepSetting.initial(otherStepSetting);
 		self.stepSetting.setSettingToAllObject();
 		self.eatDiamondTargetNum = self.stepSetting.getValue('diamond_target');
@@ -82,28 +73,6 @@ GameFrame.prototype.initialScoreBoard = function() {
 	}
 };
 
-GameFrame.prototype.getArgs = function(argId, argPos) {
-	return {
-		id: argId,
-		listCanPass: null,
-		listImage: null,
-		pos: argPos,
-		actionFactory: this.actionFactory,
-		mapDimension: {maxX: this.mapFactory.getMaxX(), maxY: this.mapFactory.getMaxY()},
-		bindFuncMove: this.slotObjMoveEvent.bind(this),
-		bindFuncMove2: this.slotObjPosMoveEvent.bind(this),
-		bindFuncCreate: this.slotCreateObjEvent.bind(this),
-		bindFuncTriggerObjFunc: this.slotCallObjFunc.bind(this),
-		bindFuncChangeObj: this.slotChangeObjEvent.bind(this),
-		bindFuncBurst: this.slotBurstEvent.bind(this),
-		bindFuncGetAllObjCanPassPos: this.slotGetAllObjCanPassPos.bind(this),
-		bindFuncEatObject: this.slotEatObject.bind(this),
-		bindFuncMasterMove: this.slotOnMasterMove.bind(this),
-		bindFuncMasterGoExit: this.slotOnMasterGoExit.bind(this),
-		bindFuncPlayEffectSound: this.slotPlayEffectSound.bind(this)
-	};
-};
-
 GameFrame.prototype.addEatenDiamondNum = function() {
 	this.curEatDiamondNum = this.curEatDiamondNum + 1;
 	this.clockDiamondEatNum.increase();
@@ -120,127 +89,6 @@ GameFrame.prototype.openExit = function() {
 	while(index < listExit.length) {
 		listExit[index].callFunc(0);
 		index = index + 1;
-	}
-};
-
-GameFrame.prototype.slotObjMoveEvent = function(obj, nextPos, nextImage) {
-	if(nextPos != null) {
-		var curPos = obj.getCurPos();
-		var temp = this.mapFactory.getEle(curPos);
-		this.mapFactory.setEle(nextPos, obj);
-		this.mapFactory.setEle(curPos, null);
-	}
-	obj.update(null, nextImage);
-};
-
-GameFrame.prototype.slotObjPosMoveEvent = function(objPos, nextPos, nextImage) {
-	this.slotObjMoveEvent(this.mapFactory.getEle(objPos), nextPos, nextImage);
-};
-
-GameFrame.prototype.slotCreateObjEvent = function(id, pos, isStopAct) {
-	var oldObj = this.mapFactory.getEle(pos);
-	if(oldObj != null) {
-		oldObj.stopAction('ALL');
-	}
-	var objNew = this.objFactory.create(this.getArgs(id, pos));
-	if(objNew != null) {
-		objNew.setGenWay(objNew.GEN_WAY_FROM_OBJECT);
-		this.mapFactory.setEle(pos, objNew);
-		if(isStopAct == null) {
-			objNew.startAction(0);
-		}
-	}
-	else {
-		this.mapFactory.setEle(pos, null);
-	}
-	return objNew;
-};
-
-GameFrame.prototype.slotCallObjFunc = function(pos, funcId, objId) {
-	var obj = this.mapFactory.getEle(pos);
-	if(obj != null && obj.getId() == objId) {
-		obj.callFunc(funcId);
-	}
-};
-
-GameFrame.prototype.slotGetAllObjCanPassPos = function(objId) {
-	var listPosCanPass = [];
-	var indexX = 0;
-	while(indexX <= this.mapFactory.getMaxX()){
-		var indexY = 0;
-		while(indexY <= this.mapFactory.getMaxY()) {
-			var pos = new Position(indexX, indexY);
-			var ele = this.mapFactory.getEle(pos);
-			if(ele != null && ele.getId() == objId) {
-				var listPosTemp = ele.getPosCanPass();
-				var indexTemp = 0;
-				while(indexTemp < listPosTemp.length) {
-					var isExist = false;
-					var indexCheck = 0;
-					while(!isExist && indexCheck < listPosCanPass.length) {
-						if(listPosCanPass[indexCheck].x == listPosTemp[indexTemp].x && listPosCanPass[indexCheck].y == listPosTemp[indexTemp].y) {
-							isExist = true;
-						}
-						indexCheck = indexCheck + 1;
-					}
-					if(!isExist) {
-						listPosCanPass.push(listPosTemp[indexTemp]);
-					}
-					indexTemp = indexTemp + 1;
-				}
-			}
-			indexY = indexY + 1;
-		}
-		indexX = indexX + 1;
-	}
-	return listPosCanPass;
-};
-
-GameFrame.prototype.slotChangeObjEvent = function(listPos, orgObjId, targetObjId) {
-	if(listPos == 'ALL') {
-		var indexX = 0;
-		while(indexX <= this.mapFactory.getMaxX()){
-			var indexY = 0;
-			while(indexY <= this.mapFactory.getMaxY()) {
-				var pos = new Position(indexX, indexY);
-				var ele = this.mapFactory.getEle(pos);
-				if(ele != null && ele.getId() == orgObjId) {
-					this.slotCreateObjEvent(targetObjId, pos);
-				}
-				indexY = indexY + 1;
-			}
-			indexX = indexX + 1;
-		}
-	}
-	else {
-
-	}
-};
-
-GameFrame.prototype.slotBurstEvent = function(listPos, objIdProd) {
-	this.slotPlayEffectSound("BOOM");
-	var tempBurstArea = this.slotCreateObjEvent('BURST_AREA', null, true)
-	var index = 0;
-	var isBurstGreenWaterWithMainSpread = false;
-	var extraSetting = null;
-	while(index < listPos.length) {
-		if(tempBurstArea.isPassby(listPos[index])) {
-			var obj = this.mapFactory.getEle(listPos[index]);
-			if(obj != null && obj.getId() == 'GREEN_WATER' && obj.getIsAllowSpread()) {
-				extraSetting = this.mapFactory.getEle(listPos[index]).getExtraSetting();
-				isBurstGreenWaterWithMainSpread = true;
-			}
-			var newObj = this.slotCreateObjEvent('BURST_AREA', listPos[index]);
-			newObj.setBurstGenObj(objIdProd);
-		}
-		index = index + 1;
-	}
-	if(isBurstGreenWaterWithMainSpread) {
-		var obj = this.mapFactory.getOneOfObj('GREEN_WATER');
-		if(obj != null) {
-			obj.setIsAllowSpread(true);
-			obj.setExtraSetting(extraSetting);
-		}
 	}
 };
 
@@ -286,27 +134,6 @@ GameFrame.prototype.slotReloadGame = function(loadType, res) {
 	this.slotOnMasterMove(this.mapFactory.getOneOfObj("MASTER").getCurPos());
 };
 
-GameFrame.prototype.slotLetMasterMove = function(event) {
-	if(this.isGameStart) {
-		var masterObj = this.mapFactory.getOneOfObj('MASTER');
-		if(masterObj != null) {
-			var posTouch = new Position(event.offsetX + this.drawStartPos.x * this.cubeWidth, 
-				event.offsetY + this.drawStartPos.y * this.cubeHeight);
-			masterObj.setIsMoveLasting('ok');
-			if(masterObj.triggerMoveEventByClickPos(posTouch, this.cubeWidth, this.cubeHeight) != null) {
-				this.arrowHint.setIsPaint(false);
-			}
-		}
-	}
-};
-
-GameFrame.prototype.slotLetMasterStopMove = function(event) {
-	var masterObj = this.mapFactory.getOneOfObj('MASTER');
-	if(masterObj != null) {
-		masterObj.setIsMoveLasting(null);
-	}
-};
-
 GameFrame.prototype.slotOnMasterMove = function(posMove) {
 	//width
 	if(posMove.x + 5 <= this.mapFactory.getMaxX()) {
@@ -336,20 +163,6 @@ GameFrame.prototype.slotOnMasterGoExit = function() {
 		this.slotGoNextStep();
 	}
 }
-
-GameFrame.prototype.slotEatObject = function(posEat) {
-	var eatObj = this.mapFactory.getEle(posEat);
-	var eatObjId = eatObj.getId();
-	if(eatObj != null) {
-		eatObj.stopAction('ALL');
-		delete eatObj;
-		switch(eatObjId) {
-			case 'DIAMOND':
-				this.addEatenDiamondNum();
-				break;
-		}
-	}
-};
 
 GameFrame.prototype.slotSyncMap = function(args) {
 	this.slotReloadGame('SYNC', args);

@@ -1,5 +1,5 @@
-var ActionFactory = function(eventQueueHandler) {
-	this.eventQueueHandler = eventQueueHandler;
+var ActionFactory = function() {
+	this.eventQueueHandler = null;
 
 	this.move = {
 		'MOVE_ARROUND_WALL' : MoveArroundWall,
@@ -18,6 +18,10 @@ var ActionFactory = function(eventQueueHandler) {
 		'GENOBJ_SPREAD' : GenObjSpread,
 		'GENOBJ_DIR_STRETCH' : GenObjDirectionStretch
 	};
+};
+
+ActionFactory.prototype.initialObj = function(eventQueueHandler) {
+	this.eventQueueHandler = eventQueueHandler;
 };
 
 ActionFactory.prototype.create = function(args) {

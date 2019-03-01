@@ -1,6 +1,9 @@
-var StepSetting = function (mapFactory) {
+var StepSetting = function () {
 	this.setting = null;
 	this.listObjSetting = null;
+};
+
+StepSetting.prototype.initialObj = function(mapFactory) {
 	this.mapFactory = mapFactory;
 };
 

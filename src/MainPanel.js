@@ -11,7 +11,6 @@ var MainPanel = function(ctx, canvas){
 	this.canvas = canvas;
 	this.ctx = ctx;
 };
-
 /* Bind Mouse push event to given bindFunc with touch positon (event.offsetX, event.offsetY) */
 MainPanel.prototype.bindOnMouseDownEvent = function(bindFunc) {
 	if(this.mapBindFunc.MouseDown != null) {  //remove original listener

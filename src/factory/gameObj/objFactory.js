@@ -1,7 +1,9 @@
- var ObjFactory = function (imgFactory, map, gamePanel) {
- 	this.imgFactory = imgFactory;
- 	this.map = map;
- 	this.gamePanel = gamePanel;
+var ObjFactory = function () {
+ 	this.imgFactory = null;
+ 	this.actionFactory = null;
+ 	this.map = null;
+ 	this.gamePanel = null;
+
  	this.listObj = {
  		0: 'ROAD',
  		1: 'SAND',
@@ -19,30 +21,34 @@
  		13:"EXIT"
  	};
  	this.mapNameToInfo = {
- 		'ROAD': 		{builder: Road, type: {dim: "FLOOR"}},
- 		'SAND': 		{builder: Sand, type: {dim: "OBJECT"}},
- 		'STONE': 		{builder: Stone, type: {dim: "OBJECT"}},
- 		'STONE_WALL': 	{builder: StoneWall, type: {dim: "OBJECT"}},
- 		'DIAMOND': 		{builder: Diamond, type: {dim: "OBJECT"}},
- 		'STRETCH_WALL': {builder: StretchWall, type: {dim: "OBJECT"}},
- 		'MAGIC_WALL': 	{builder: MagicWall, type: {dim: "OBJECT"}},
- 		'GREEN_WATER':  {builder: GreenWater, type: {dim: "OBJECT"}},
- 		'BURST_AREA':   {builder: BurstArea, type: {dim: "OBJECT"}},
- 		'MONSTER_CUBE': {builder: MonsterCube, type: {dim: "OBJECT"}},
- 		'TILE':   		{builder: Tile, type: {dim: "OBJECT"}},
- 		'BUTTERFLY':    {builder: Butterfly, type: {dim: "OBJECT"}},
- 		'MASTER':       {builder: Master, type: {dim: "OBJECT"}},
- 		'EXIT':         {builder: Exit, type: {dim: "OBJECT"}}
+ 		'ROAD': 		{builder: Road},
+ 		'SAND': 		{builder: Sand},
+ 		'STONE': 		{builder: Stone},
+ 		'STONE_WALL': 	{builder: StoneWall},
+ 		'DIAMOND': 		{builder: Diamond},
+ 		'STRETCH_WALL': {builder: StretchWall},
+ 		'MAGIC_WALL': 	{builder: MagicWall},
+ 		'GREEN_WATER':  {builder: GreenWater},
+ 		'BURST_AREA':   {builder: BurstArea},
+ 		'MONSTER_CUBE': {builder: MonsterCube},
+ 		'TILE':   		{builder: Tile},
+ 		'BUTTERFLY':    {builder: Butterfly},
+ 		'MASTER':       {builder: Master},
+ 		'EXIT':         {builder: Exit}
  	};
- };
+};
 
- ObjFactory.prototype.setActionFactory = function(actionFactory) {
+ObjFactory.prototype.initialObj = function(gamePanel, imgFactory, mapFactory, actionFactory) {
+ 	this.gamePanel = gamePanel;
+ 	this.imgFactory = imgFactory;
+ 	this.map = mapFactory;
  	this.actionFactory = actionFactory;
- };
+};
 
- ObjFactory.prototype.create = function(args) {
+ObjFactory.prototype.create = function(objId) {
  	var target = null;
  	var obj = null;
+ 	var args = {id: objId};
 
  	if(this.mapNameToInfo[args.id] != null) {
  		target = this.mapNameToInfo[args.id];
@@ -52,7 +58,6 @@
  		args.id = this.listObj[args.id];
  	}
  	if(target != null) {
- 		args.type = target.type;
  		args.map = this.map;
  		args.actionFactory = this.actionFactory;
  		args.gamePanel = this.gamePanel;
@@ -60,9 +65,9 @@
  		obj.setListImageByImageFactory(this.imgFactory);
  	}
  	return obj;
- };
+};
 
- ObjFactory.prototype.getAllTypeOfObj = function() {
+ObjFactory.prototype.getAllTypeOfObj = function() {
  	var list = [];
  	for(key in this.listObj) {
  		var ele = {num: key, type: this.mapNameToInfo[this.listObj[key]].type, 
