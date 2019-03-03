@@ -17,7 +17,7 @@ var GameFrame = function(ctx, canvGame){
 	this.actionFactory.initialObj(this.eventQueueHandler);
 	this.gamePanel.setMap(this.mapFactory);
 
-	this.curStep = 0;
+	this.curStep = 2;
 	this.isGameStart = false;
 
 	this.initial();
@@ -103,6 +103,9 @@ GameFrame.prototype.slotStartGame = function() {
 		return;
 	}
 	var callBackFuncStartObjAction = function(pos, ele) {
+		if(ele == null) {
+			return;
+		}
 		ele.startAction('ALL');
 	};
 	this.mapFactory.processMapEle(callBackFuncStartObjAction.bind(this), true);

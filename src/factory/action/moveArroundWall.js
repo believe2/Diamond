@@ -1,6 +1,6 @@
 var MoveArroundWall = function(args) {
 	BaseAction.call(this, args);
-	this.trajHistory = new TrajHistory(args.mapDimension.maxX, args.mapDimension.maxY);
+	this.trajHistory = new TrajHistory(this.map.getMaxX(), this.map.getMaxY());
 	this.math = new MyMath();
 };
 
