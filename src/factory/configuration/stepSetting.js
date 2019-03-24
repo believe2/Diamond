@@ -39,31 +39,18 @@ StepSetting.prototype.getSetting = function(pos, objId) {
 };
 
 StepSetting.prototype.setSettingToAllObject = function() {
-	var index = 0;
-	while(this.listObjSetting != null && index < this.listObjSetting.length) {
-		var setting = this.listObjSetting[index];
-		if(setting.pos == 'ALL') {
-			var listObj = this.getAllOfObjFromMap(setting.id);
-			var indexObj = 0;
-			while(indexObj < listObj.length) {
-				listObj[indexObj].setExtraSetting(setting);
-				indexObj = indexObj + 1;
+	var callBackFuncResetObjVarSetting = function(pos, ele) {
+		for(index in this.listObjSetting) {
+			var eleSetting = this.listObjSetting[index];
+			if(eleSetting.pos == 'ALL' && eleSetting.id == ele.getId()) {
+				ele.setExtraSetting(eleSetting);
 			}
-
-			var abstratcObj = this.mapFactory.getListAbstractObj()[setting.id];
-			if(abstratcObj != null) {
-				abstratcObj.setExtraSetting(setting);
+			else if(pos.equal(eleSetting.pos)) {
+				ele.setExtraSetting(eleSetting);
 			}
 		}
-		else {
-			var pos = new Position(setting.pos.x, setting.pos.y);
-			var obj = this.getEleFromMap(setting.id, pos);
-			if(obj != null) {
-				obj.setExtraSetting(setting);
-			}
-		}
-		index = index + 1;
-	}
+	};
+	this.mapFactory.processMapEle(callBackFuncResetObjVarSetting.bind(this), true);
 };
 
 StepSetting.prototype.updateSetting = function(settingEle, mode) {
@@ -108,27 +95,4 @@ StepSetting.prototype.isExistInMap = function(id) {
 		}
 		index = index + 1;
 	}
-};
-
-StepSetting.prototype.getAllOfObjFromMap = function(id) {
-	var list = [];
-	var index = 0;
-	while(index < this.listMapFactory.length) {
-		list = list.concat(this.listMapFactory[index].getAllOfObj(id));
-		index = index + 1;
-	}
-	return list;
-};
-
-StepSetting.prototype.getEleFromMap = function(id, pos) {
-	var result = null;
-	var index = 0;
-	while(result == null && index < this.listMapFactory.length) {
-		result = this.listMapFactory[index].getEle(pos);
-		if(result != null && result.getId() != id) {
-			result = null;
-		}
-		index = index + 1;
-	}
-	return result;
 };

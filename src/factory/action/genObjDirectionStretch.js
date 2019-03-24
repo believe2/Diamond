@@ -37,13 +37,13 @@ GenObjDirectionStretch.prototype.nextPosStretch = function() {
 GenObjDirectionStretch.prototype.findPosCanStretch = function(strDir) {
 	var posGen = new PosGenerator();
 	var posCheck = posGen.posByConstantString(this.mainObj.getCurPos(), strDir);
-	var posObjInfo = this.mainObj.funcGetObjInfoByPos(posCheck);
+	var curCheckObj = this.mainObj.map.getEle(posCheck);
 
-	while(posObjInfo != null && 
-		  posObjInfo.genWay == this.mainObj.GEN_WAY_FROM_OBJECT && 
-		  posObjInfo.id == this.mainObj.getStretchGenObj()) {
+	while(curCheckObj != null && 
+		  curCheckObj.genWay == this.mainObj.GEN_WAY_FROM_OBJECT && 
+		  curCheckObj.getId() == this.mainObj.getStretchGenObj()) {
 		posCheck = posGen.posByConstantString(posCheck, strDir);
-		posObjInfo = this.mainObj.funcGetObjInfoByPos(posCheck);
+		curCheckObj = this.mainObj.map.getEle(posCheck);
 	}
 	if(this.mainObj.isPassby(posCheck)) {
 		return posCheck;
