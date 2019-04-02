@@ -77,21 +77,14 @@ MapFactory.prototype.getOneOfObj = function(objId) {
 	return result;
 };
 
-MapFactory.prototype.getAllOfObj = function(objId) {
-	var indexX = 0;
+MapFactory.prototype.getAllOfObj = function(objId) {  //fixfix
 	var result = [];
-	while(indexX <= this.getMaxX()){
-		var indexY = 0;
-		while(indexY <= this.getMaxY()) {
-			var pos = new Position(indexX, indexY);
-			var obj = this.getEle(pos);
-			if(obj != null && obj.getId() == objId) {
-				result.push(obj);
-			}
-			indexY = indexY + 1;
+	var callbackfuncGetObj = function(pos, ele) {
+		if(ele != null && ele.getId() == objId) {
+			result.push(ele);
 		}
-		indexX = indexX + 1;
 	}
+	this.processMapEle(callbackfuncGetObj);
 	return result;
 };
 
@@ -106,10 +99,7 @@ MapFactory.prototype.setEle = function(pos, ele) {
 
 MapFactory.prototype.setAbstractEle = function(eleId) {
 	if(this.listAbstractObj[eleId] == null) {
-		var args = [];
-		args.id = eleId;
-		args.pos = new Position(-1, -1);
-		var ele = this.objFactory.create(args);
+		var ele = this.objFactory.create(eleId);
 		ele.setGenWay(ele.GEN_WAY_ABSTRACT);
 		this.listAbstractObj[eleId] = ele;
 	}
@@ -150,36 +140,29 @@ MapFactory.prototype.getMapLevelNo = function() {
 	return this.map.length;
 };
 
-MapFactory.prototype.getAllObjCanPassPos = function(objId) {
+MapFactory.prototype.getAllObjCanPassPos = function(objId) {  //fixfix
 	var listPosCanPass = [];
-	var indexX = 0;
-	while(indexX <= this.getMaxX()){
-		var indexY = 0;
-		while(indexY <= this.getMaxY()) {
-			var pos = new Position(indexX, indexY);
-			var ele = this.getEle(pos);
-			if(ele != null && ele.getId() == objId) {
-				var listPosTemp = ele.getPosCanPass();
-				var indexTemp = 0;
-				while(indexTemp < listPosTemp.length) {
-					var isExist = false;
-					var indexCheck = 0;
-					while(!isExist && indexCheck < listPosCanPass.length) {
-						if(listPosCanPass[indexCheck].x == listPosTemp[indexTemp].x && listPosCanPass[indexCheck].y == listPosTemp[indexTemp].y) {
-							isExist = true;
-						}
-						indexCheck = indexCheck + 1;
+	var callBackFuncGetAllObjCanPassPos = function(pos, ele) {
+		if(ele != null && ele.getId() == objId) {
+			var listCurObjCanPassPos = ele.getPosCanPass();
+			var indexTemp = 0;
+			while(indexTemp < listCurObjCanPassPos.length) {
+				var isExist = false;
+				var indexCheck = 0;
+				while(!isExist && indexCheck < listPosCanPass.length) {
+					if(listPosCanPass[indexCheck].equal(listCurObjCanPassPos[indexTemp])) {
+						isExist = true;
 					}
-					if(!isExist) {
-						listPosCanPass.push(listPosTemp[indexTemp]);
-					}
-					indexTemp = indexTemp + 1;
+					indexCheck = indexCheck + 1;
 				}
+				if(!isExist) {
+					listPosCanPass.push(listCurObjCanPassPos[indexTemp]);
+				}
+				indexTemp = indexTemp + 1;
 			}
-			indexY = indexY + 1;
 		}
-		indexX = indexX + 1;
-	}
+	};
+	this.processMapEle(callBackFuncGetAllObjCanPassPos.bind(this));
 	return listPosCanPass;
 };
 
@@ -273,7 +256,7 @@ MapFactory.prototype.processMapEle = function(callBackFuncEle, isProcessAbstract
 	//process each abstract element
 	if(isProcessAbstractEle) {
 		for(keys in this.listAbstractObj) {
-			callBackFuncEle(null, ele);
+			callBackFuncEle('OBJ_OBSTRACT', this.listAbstractObj[keys]);
 		}
 	}
 };

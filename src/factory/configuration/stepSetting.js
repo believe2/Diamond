@@ -40,6 +40,9 @@ StepSetting.prototype.getSetting = function(pos, objId) {
 
 StepSetting.prototype.setSettingToAllObject = function() {
 	var callBackFuncResetObjVarSetting = function(pos, ele) {
+		if(ele == null) {
+			return;
+		}
 		for(index in this.listObjSetting) {
 			var eleSetting = this.listObjSetting[index];
 			if(eleSetting.pos == 'ALL' && eleSetting.id == ele.getId()) {
