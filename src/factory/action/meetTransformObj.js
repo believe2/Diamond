@@ -44,11 +44,11 @@ MeetTransformObj.prototype.observerMagic = function() {
 
 MeetTransformObj.prototype.triggerTransformObj = function() {
 	var targetPos = this.posGen.posByConstantString(this.mainObj.getCurPos(), this.touchDir);
-	var targetObjInfo = this.mainObj.funcGetObjInfoByPos(targetPos);
-	if(this.isMagicing && targetObjInfo != null) {
+	var targetObj = this.mainObj.map.getEle(targetPos);
+	if(this.isMagicing && targetObj != null) {
 		var resultPos = this.posGen.posByConstantString(this.mainObj.getCurPos(), this.transformDir);
-		var transfomTargetObj = this.transformObjFormula[targetObjInfo.id];
-		if(targetObjInfo != null && targetObjInfo.funcIsPassby(resultPos) && transfomTargetObj != null) {  //transform object
+		var transfomTargetObj = this.transformObjFormula[targetObj.getId()];
+		if(targetObj != null && targetObj.isPassby(resultPos) && transfomTargetObj != null) {  //transform object
 			var parms1 = {objType: transfomTargetObj, 
 			              pos: [resultPos], 
 			              createType: "MULTI", 
@@ -58,7 +58,7 @@ MeetTransformObj.prototype.triggerTransformObj = function() {
 		}
 	}
 	//destroy original object
-	if(targetObjInfo != null && this.transformObjFormula[targetObjInfo.id] != null) {
+	if(targetObj != null && this.transformObjFormula[targetObj.getId()] != null) {
 		var parms2 = {objType: null, 
 		              pos: [targetPos], 
 		              createType: "MULTI", 
@@ -71,8 +71,8 @@ MeetTransformObj.prototype.triggerTransformObj = function() {
 
 MeetTransformObj.prototype.isTouchTargetObj = function() {
 	var posTouch = this.posGen.posByConstantString(this.mainObj.getCurPos(), this.touchDir);
-	var touchObj = this.mainObj.funcGetObjInfoByPos(posTouch);
-	if(touchObj != null && this.transformObjFormula[touchObj.id] != null) {
+	var touchObj = this.mainObj.map.getEle(posTouch);
+	if(touchObj != null && this.transformObjFormula[touchObj.getId()] != null) {
 		return true;
 	}
 	return false;

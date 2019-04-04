@@ -17,7 +17,7 @@ var GameFrame = function(ctx, canvGame){
 	this.actionFactory.initialObj(this.eventQueueHandler);
 	this.gamePanel.setMap(this.mapFactory);
 
-	this.curStep = 5;
+	this.curStep = 6;
 	this.isGameStart = false;
 
 	this.initial();
