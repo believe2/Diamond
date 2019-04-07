@@ -135,30 +135,6 @@ GameFrame.prototype.slotReloadGame = function(loadType, res) {
 	this.arrowHint.setIsPaint(false);
 	this.slotStopGame();
 	this.loadMap(loadType, res);
-	this.slotOnMasterMove(this.mapFactory.getOneOfObj("MASTER").getCurPos());
-};
-
-GameFrame.prototype.slotOnMasterMove = function(posMove) {
-	//width
-	if(posMove.x + 5 <= this.mapFactory.getMaxX()) {
-		this.drawStartPos.x = posMove.x - (this.drawMaxWidth - 5);
-		if(this.drawStartPos.x < 0) {
-			this.drawStartPos.x = 0;
-		}
-	}
-	else {
-		this.drawStartPos.x = this.mapFactory.getMaxX() - this.drawMaxWidth + 1;
-	}
-	//height
-	if(posMove.y + 6 <= this.mapFactory.getMaxY()) {
-		this.drawStartPos.y = posMove.y - (this.drawMaxHeight - 6);
-		if(this.drawStartPos.y < 0) {
-			this.drawStartPos.y = 0;
-		}
-	}
-	else {
-		this.drawStartPos.y = this.mapFactory.getMaxY() - this.drawMaxHeight + 1;
-	}
 };
 
 GameFrame.prototype.slotOnMasterGoExit = function() {

@@ -69,10 +69,10 @@ MainPanel.prototype.drawByCubeMap = function() {
 	this.mapFactory.processMapEle(callBackFuncDrawImg.bind(this));
 };
 
-MainPanel.prototype.changeStartPosOnObjectMove = function(pos) {
+MainPanel.prototype.changeStartPosOnObjectMove = function(targetObjPos) {
 	//width
-	if(pos.x + 5 <= this.mapFactory.getMaxX()) {
-		this.drawStartPos.x = pos.x - (this.drawMaxWidth - 5);
+	if(targetObjPos.x + 5 <= this.mapFactory.getMaxX()) {
+		this.drawStartPos.x = targetObjPos.x - (this.drawMaxWidth - 5);
 		if(this.drawStartPos.x < 0) {
 			this.drawStartPos.x = 0;
 		}
@@ -81,8 +81,8 @@ MainPanel.prototype.changeStartPosOnObjectMove = function(pos) {
 		this.drawStartPos.x = this.mapFactory.getMaxX() - this.drawMaxWidth;
 	}
 	//height
-	if(pos.y + 6 <= this.mapFactory.getMaxY()) {
-		this.drawStartPos.y = pos.y - (this.drawMaxHeight - 6);
+	if(targetObjPos.y + 6 <= this.mapFactory.getMaxY()) {
+		this.drawStartPos.y = targetObjPos.y - (this.drawMaxHeight - 6);
 		if(this.drawStartPos.y < 0) {
 			this.drawStartPos.y = 0;
 		}
