@@ -45,6 +45,7 @@ MoveByHand.prototype.doAction = function() {
 				hasMoveNextPos = true;
 			}
 			if(hasMoveNextPos) {
+				this.eventQueueHandler.throwEvent('EVENT_PANEL_ON_OBJECT_MOVE', this.mainObj);
 				this.mainObj.doNextWhenMove();
 			}
 		}

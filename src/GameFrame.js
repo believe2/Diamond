@@ -12,12 +12,12 @@ var GameFrame = function(ctx, canvGame){
 
 	this.stepSetting.initialObj(this.mapFactory);
 	this.objFactory.initialObj(this.gamePanel, this.imgFactory, this.mapFactory, this.actionFactory);
-	this.eventQueueHandler.initialObj(this.mapFactory, this.objFactory, this.soundEffectFactory);
+	this.eventQueueHandler.initialObj(this.mapFactory, this.objFactory, this.soundEffectFactory, this.gamePanel);
 	this.mapFactory.initialObj(this.objFactory);
 	this.actionFactory.initialObj(this.eventQueueHandler);
 	this.gamePanel.setMap(this.mapFactory);
 
-	this.curStep = 6;
+	this.curStep = 9;
 	this.isGameStart = false;
 
 	this.initial();
@@ -48,6 +48,7 @@ GameFrame.prototype.loadMap = function(loadType, res) {
 		self.stepSetting.setSettingToAllObject();
 		self.eatDiamondTargetNum = self.stepSetting.getValue('diamond_target');
 		self.timeLimit = self.stepSetting.getValue('time_limit');
+		self.eventQueueHandler.changePanelStartPos(self.mapFactory.getOneOfObj('MASTER'));
 		self.initialScoreBoard();
 	};
 	self.curEatDiamondNum = 0;

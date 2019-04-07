@@ -3,10 +3,11 @@ var EventQueueHandler = function() {
 	this.threadEventHandler = null;
 };
 
-EventQueueHandler.prototype.initialObj = function(mapFactory, objFactory, soundEffectFactory) {
+EventQueueHandler.prototype.initialObj = function(mapFactory, objFactory, soundEffectFactory, mainPanel) {
 	this.map = mapFactory;
 	this.objFactory = objFactory;
 	this.soundEffectFactory = soundEffectFactory;
+	this.mainPanel = mainPanel;
 };
 //start thread to listen eventQueue
 EventQueueHandler.prototype.start = function() {  
@@ -65,6 +66,9 @@ EventQueueHandler.prototype.selectProcessEvent = function(eventType, obj, action
 			break;
 		case 'EVENT_MASTER_EAT_OBJECT' :
 			this.eat(obj, parms.targetObj);
+			break;
+		case 'EVENT_PANEL_ON_OBJECT_MOVE' :
+			this.changePanelStartPos(obj);
 			break;
 		default :
 			console.log('can not handle ' + eventType);
@@ -150,4 +154,9 @@ EventQueueHandler.prototype.destroyObj = function(pos) {
 
 EventQueueHandler.prototype.playEffectSound = function(soundId) {
 	this.soundEffectFactory.playSound(soundId);
+};
+
+EventQueueHandler.prototype.changePanelStartPos = function(obj) {
+	var objPos = obj.getCurPos();
+	this.mainPanel.changeStartPosOnObjectMove(objPos);
 };
