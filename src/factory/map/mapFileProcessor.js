@@ -1,6 +1,7 @@
-var MapFileProcessor = function (objectSetting) {
+var MapFileProcessor = function () {
 	this.listMapRawData = [];
-	this.otherStepSetting = null;
+	this.objSetting = null;
+	this.scoreboardSetting = null;
 };
 
 MapFileProcessor.prototype._preprocess = function(mapGroup) {
@@ -46,7 +47,7 @@ MapFileProcessor.prototype.loadMapFromFile = function(filePath, funcCallback, fl
         	if(flag == null) {
 	        	self.loadMapJsonObj(jsonObj);
 	        }
-        	funcCallback(self.listMapRawData, self.otherStepSetting);
+        	funcCallback(self.listMapRawData, self.objSetting, self.scoreboardSetting);
         }
     };
     xmlhttp.open("GET", "src/php/loadFromFile.php?filePath=" + filePath, true);
@@ -55,8 +56,8 @@ MapFileProcessor.prototype.loadMapFromFile = function(filePath, funcCallback, fl
 
 MapFileProcessor.prototype.loadMapJsonObj = function(jsonObj) {
 	this.listMapRawData = this._preprocess(jsonObj.map_element);
-	this.otherStepSetting = jsonObj;
-	delete this.otherStepSetting.map_element;
+	this.objSetting = jsonObj.obj_setting;
+	this.scoreboardSetting = jsonObj.scoreboard_setting;
 };
 
 MapFileProcessor.prototype.getSnapshot = function(idToNoTransformator) {

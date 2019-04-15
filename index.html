@@ -87,6 +87,8 @@
 	<script type="text/javascript" src="src/factory/action/moveByHand.js"></script>
 
 	<script type="text/javascript" src="src/EventProcessor/EventQueueHandler.js"></script>
+
+	<script type="text/javascript" src="src/scoreProcessor/ScoreBoard.js"></script>
 </head>
 <body scroll="no" style="overflow: hidden">
 	<div id="particles-js">
@@ -100,20 +102,22 @@
 					<canvas id="canvGame" width="600" height="700" style="position:absolute;"></canvas>
 					<div style="float:left; margin-left: 20px; position:absolute; left: 610px">
 						<div>
-							<table>
-								<tr>
-									<td><img src="icon/clock.png" alt="Smiley face" height="70" width="70"></td>
-									<td><div class="clock" id="clock_time"></div></td>
-								</tr>
-							</table>
-							<table>
-								<tr>
-									<td><img src="icon/diamond.png" alt="Smiley face" height="50" width="70"></td>
-									<td><div class="clock" id="clock_diamondEatNum"></div></td>
-									<td><div class="myTitle">/</div></td>
-									<td><div class="clock" id="clock_diamondTarget"></div></td>
-								</tr>
-							</table>
+							<div id="scoreBoard">
+								<table>
+									<tr>
+										<td><img src="icon/clock.png" alt="Smiley face" height="70" width="70"></td>
+										<td><div class="clock" id="clock_time"></div></td>
+									</tr>
+								</table>
+								<table>
+									<tr>
+										<td><img src="icon/diamond.png" alt="Smiley face" height="50" width="70"></td>
+										<td><div class="clock" id="clock_diamondEatNum"></div></td>
+										<td><div class="myTitle">/</div></td>
+										<td><div class="clock" id="clock_diamondTarget"></div></td>
+									</tr>
+								</table>
+							</div>
 							<div>
 								<button id="btnStart" class="btn btn-primary btn3d" style="background-color: black" 
 									 title=""><span class="glyphicon glyphicon-play"></span></button> <br>

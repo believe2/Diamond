@@ -6,7 +6,7 @@ var MapFactory = function(mapId) {
 	this.map = null;
 	this.objFactory = null;
 	this.listAbstractObj = [];
-	this.stepSetting = null;
+	this.objSetting = null;
 };
 
 MapFactory.prototype.initialObj = function(objFactory) {
@@ -18,10 +18,11 @@ MapFactory.prototype.getMapId = function() {
 };
 
 MapFactory.prototype.loadStepInfoFromFile = function(filePath, callBackFunc) {
-	var callBackFuncResetData = function(listMapRawData, otherStepSetting) {
+	var callBackFuncResetData = function(listMapRawData, objSetting, scoreboardSetting) {
 		this.mapRawData = listMapRawData;
-		this.stepSetting = otherStepSetting;
-		callBackFunc(this.mapRawData, this.stepSetting);
+		this.objSetting = objSetting;
+		this.scoreboardSetting = scoreboardSetting;
+		callBackFunc(this.mapRawData, this.objSetting, this.scoreboardSetting);
 	};
 	this.mapFileProcessor.loadMapFromFile(filePath, callBackFuncResetData.bind(this));
 };
