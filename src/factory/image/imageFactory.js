@@ -12,3 +12,7 @@ ImageFactory.prototype.load = function(imgName) {
  	}
 	return this.listImg[imgName];
 };
+
+ImageFactory.prototype.getIconPath = function(itemName) {
+	return this.dir + "/icon/" + itemName + ".png";
+}

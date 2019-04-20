@@ -1,21 +1,45 @@
 var ScoreBoard = function(idTag) {
+	this.imgFactory = null;
 	this.idTag = idTag;
-	this.listItem = [];
+	this.listCondOpenExit = null;
+	this.listCondStageClear = null;
+	this.listCondStageFail = null;
 };
 
-ScoreBoard.prototype.initialObj = function() {
-	
+ScoreBoard.prototype.initialObj = function(imgFactory) {
+	this.imgFactory = imgFactory;
 };
 
 ScoreBoard.prototype.setupByMapSetting = function(setting) {
-	console(setting);
+	console.log(setting);
+	$(this.idTag).empty();
+	this.listCondOpenExit = [];
+	this.listCondStageClear = [];
+	this.listCondStageFail = [];
+
 	for (key in setting) {
 		switch (key) {
 			case 'time_limit':
-				this.addTimeItem(setting[key].maxTime);
+				this.addTimeItem(setting[key]);
 				break;
 			default:
-				this.addStageClearConditionItem(setting[key].itemName, setting[key].maxNo);
+				for (keySubItem in setting[key]) {
+					var condItem = new ObjBehavior(setting[key][keySubItem]);
+					switch(keySubItem) {
+						case 'open_exit_condition':
+							this.listCondOpenExit.push(condItem);
+							break;
+						case 'stage_clear_condition':
+							this.listCondStageClear.push(condItem);
+							break;
+						case 'stage_fail_condition':
+							this.listCondStageFail.push(condItem);
+							break;
+					}
+					if(condItem.isNeedObjCounter()) {
+						this.addItemCounter(condItem.targetObj, condItem.amount);
+					}
+				}
 				break;
 		}
 	}
@@ -24,19 +48,18 @@ ScoreBoard.prototype.setupByMapSetting = function(setting) {
 ScoreBoard.prototype.addTimeItem = function(maxTime, callbackFuncTimeOver) {
 	$(this.idTag).append('<table>' + 
 		                 '<tr><td>' + 
-		                 '<img src="icon/clock.png" alt="Smiley face" height="70" width="70"></td><td>' + 
+		                 '<img src="' + this.imgFactory.getIconPath('clock') + '" alt="Smiley face" height="70" width="70"></td><td>' + 
 		                 '<div class="clock" id="clock_time"></div>' + 
 		                 '</td></tr></table>');
 	var clockTime = new Counter("#clock_time", callbackFuncTimeOver);
 	clockTime.initialCounter(maxTime, true);
-	clockTime.start();
-	this.listItem.push(clockTime);
+	return clockTime;
 };
 
-ScoreBoard.prototype.addStageClearConditionItem = function(itemName, maxNo, iconImg) {
+ScoreBoard.prototype.addItemCounter = function(itemName, maxNo) {
 	$(this.idTag).append('<table>' +
 						 '<tr>'+
-			             '<td><img src="' + iconImg +'" alt="Smiley face" height="50" width="70"></td>' +
+			             '<td><img src="' + this.imgFactory.getIconPath(itemName) +'" alt="Smiley face" height="50" width="70"></td>' +
 						 '<td><div class="clock" id="clock_curNum_' + itemName + '"></div></td>' +
 						 '<td><div class="myTitle">/</div></td>' +
 						 '<td><div class="clock" id="clock_targetNum_' + itemName + '"></div></td>' +
@@ -46,7 +69,7 @@ ScoreBoard.prototype.addStageClearConditionItem = function(itemName, maxNo, icon
 	clockCurNum.initialCounter(0);
 	var clockTargetNum =  new Counter("#clock_targetNum_" + itemName);
 	clockTargetNum.initialCounter(maxNo);
-	this.listItem.push(clockCurNum);
+	return clockCurNum;
 };
 
 ScoreBoard.prototype.update = function(item) {

@@ -43,12 +43,32 @@
 	},
 	"scoreboard_setting": {
 		"time_limit": 144,
-		"open_exit_condition": {
-			"MASTER_EAT_DIAMOND": 45
-		}
-		"stage_clear_condition": {
-			"MASTER_GO_EXIT": true
-		}
+		"open_exit_condition": [
+			{
+				"main_object": "MASTER",
+				"action": "EAT",
+				"target": "DIAMOND",
+				"amount": 45
+			}
+		],
+		"stage_clear_condition": [
+			{
+				"main_object": "MASTER",
+				"action": "ARRIVE",
+				"target": "EXIT"
+			}
+		],
+		"stage_fail_condition": [
+			{
+				"main_object": "MASTER",
+				"action": "DIED"
+			},
+			{
+				"main_object": "TIME",
+				"action": "ARRIVE",
+				"amount": 0
+			}
+		]
 	},
 	"obj_setting": []
 }

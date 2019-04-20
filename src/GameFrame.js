@@ -16,6 +16,7 @@ var GameFrame = function(ctx, canvGame){
 	this.eventQueueHandler.initialObj(this.mapFactory, this.objFactory, this.soundEffectFactory, this.gamePanel);
 	this.mapFactory.initialObj(this.objFactory);
 	this.actionFactory.initialObj(this.eventQueueHandler);
+	this.scoreBoard.initialObj(this.imgFactory);
 	this.gamePanel.setMap(this.mapFactory);
 
 	this.curStep = 9;
@@ -28,7 +29,7 @@ var GameFrame = function(ctx, canvGame){
 GameFrame.prototype.initial = function() {
 	console.log("gf initial");
 	//counter - time
-	this.clockTime = new Counter("#clock_time", this.slotBurstMyself.bind(this));
+	//this.clockTime = new Counter("#clock_time", this.slotBurstMyself.bind(this));
 	//counter - diamond target
 	this.clockDiamondEatNum = new Counter("#clock_diamondEatNum", null);
 	this.clockDiamondTargetNum = new Counter("#clock_diamondTarget", null);
@@ -69,11 +70,13 @@ GameFrame.prototype.loadMap = function(loadType, res) {
 };
 
 GameFrame.prototype.initialScoreBoard = function() {
+	/*
 	if(this.clockDiamondEatNum != null && this.clockDiamondTargetNum != null && this.clockTime != null) {
 		this.clockDiamondEatNum.initialCounter(this.curEatDiamondNum, false);
 		this.clockDiamondTargetNum.initialCounter(this.eatDiamondTargetNum, false);
 		this.clockTime.initialCounter(this.timeLimit, true);
 	}
+	*/
 };
 
 GameFrame.prototype.addEatenDiamondNum = function() {
@@ -112,7 +115,7 @@ GameFrame.prototype.slotStartGame = function() {
 		ele.startAction('ALL');
 	};
 	this.mapFactory.processMapEle(callBackFuncStartObjAction.bind(this), true);
-	this.clockTime.start();
+	//this.clockTime.start();
 	this.isGameStart = true;
 	this.arrowHint.setIsPaint(true);
 	this.eventQueueHandler.start();
