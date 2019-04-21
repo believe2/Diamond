@@ -28,11 +28,6 @@ var GameFrame = function(ctx, canvGame){
 
 GameFrame.prototype.initial = function() {
 	console.log("gf initial");
-	//counter - time
-	//this.clockTime = new Counter("#clock_time", this.slotBurstMyself.bind(this));
-	//counter - diamond target
-	//this.clockDiamondEatNum = new Counter("#clock_diamondEatNum", null);
-	//this.clockDiamondTargetNum = new Counter("#clock_diamondTarget", null);
 	//monitor to play background music
 	this.soundEffectFactory.initial();
 	this.backgroundMusicFactory.initial();
@@ -48,11 +43,8 @@ GameFrame.prototype.loadMap = function(loadType, res) {
 		self.mapFactory.createObjByMap();
 		self.stepSetting.initial(objectSetting);
 		self.stepSetting.setSettingToAllObject();
-		self.eatDiamondTargetNum = self.stepSetting.getValue('diamond_target');
-		self.timeLimit = self.stepSetting.getValue('time_limit');
 		self.eventQueueHandler.changePanelStartPos(self.mapFactory.getOneOfObj('MASTER'));
-		self.scoreBoard.setupByMapSetting(self.mapFactory.scoreboardSetting);
-		self.initialScoreBoard();
+		self.scoreBoard.setupByMapSetting(scoreboardSetting);
 	};
 	self.curEatDiamondNum = 0;
 	switch(loadType) {
@@ -67,16 +59,6 @@ GameFrame.prototype.loadMap = function(loadType, res) {
 			funcInitialStep();
 			break;
 	}
-};
-
-GameFrame.prototype.initialScoreBoard = function() {
-	/*
-	if(this.clockDiamondEatNum != null && this.clockDiamondTargetNum != null && this.clockTime != null) {
-		this.clockDiamondEatNum.initialCounter(this.curEatDiamondNum, false);
-		this.clockDiamondTargetNum.initialCounter(this.eatDiamondTargetNum, false);
-		this.clockTime.initialCounter(this.timeLimit, true);
-	}
-	*/
 };
 
 GameFrame.prototype.addEatenDiamondNum = function() {
@@ -115,7 +97,6 @@ GameFrame.prototype.slotStartGame = function() {
 		ele.startAction('ALL');
 	};
 	this.mapFactory.processMapEle(callBackFuncStartObjAction.bind(this), true);
-	//this.clockTime.start();
 	this.scoreBoard.start();
 	this.isGameStart = true;
 	this.arrowHint.setIsPaint(true);

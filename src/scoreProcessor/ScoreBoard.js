@@ -1,4 +1,5 @@
 var ScoreBoard = function(idTag) {
+	this.setting = null;
 	this.imgFactory = null;
 	this.idTag = idTag;
 	this.listCondOpenExit = null;
@@ -12,14 +13,17 @@ ScoreBoard.prototype.initialObj = function(imgFactory, eventQueueHandler) {
 };
 
 ScoreBoard.prototype.setupByMapSetting = function(setting) {
+	if(setting != null) {
+		this.setting = setting;
+	}
 	$(this.idTag).empty();
 	this.listCondOpenExit = [];
 	this.listCondStageClear = [];
 	this.listCondStageFail = [];
 
-	for (key in setting) {
-		for (keySubItem in setting[key]) {
-			var condItem = new ObjBehavior(setting[key][keySubItem]);
+	for (key in this.setting) {
+		for (keySubItem in this.setting[key]) {
+			var condItem = new ObjBehavior(this.setting[key][keySubItem]);
 			switch(key) {
 				case 'open_exit_condition':
 					this.listCondOpenExit.push(condItem);
@@ -48,11 +52,17 @@ ScoreBoard.prototype.setupByMapSetting = function(setting) {
 };
 
 ScoreBoard.prototype.addDecreaseCounterItem = function(itemName, maxNo, isAutoCount, callbackFunc) {
-	$(this.idTag).append('<table>' + 
-		                 '<tr><td>' + 
-		                 '<img src="' + this.imgFactory.getIconPath(itemName) + '" alt="Smiley face" height="70" width="70"></td><td>' + 
-		                 '<div class="clock" id="counter_decrease_' + itemName + '"></div>' + 
-		                 '</td></tr></table>');
+	var htmlItem = '<table>' + 
+	               '<tr><td>' + 
+	               '<img src="' + this.imgFactory.getIconPath(itemName) + '" alt="Smiley face" height="70" width="70"></td><td>' + 
+	               '<div class="clock" id="counter_decrease_' + itemName + '"></div>' + 
+	               '</td></tr></table>';
+	if(itemName == 'TIME'){
+		$(this.idTag).prepend(htmlItem);
+	}
+	else {
+		$(this.idTag).append(htmlItem);
+	}
 	var counterDecrease = new Counter("#counter_decrease_" + itemName, callbackFunc);
 	counterDecrease.initialCounter(maxNo, isAutoCount);
 	return counterDecrease;
