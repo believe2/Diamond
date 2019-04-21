@@ -2,11 +2,13 @@ var MapFactory = function(mapId) {
 	this.mapFileProcessor = new MapFileProcessor();
 	this.mapId = mapId;
 	this.mapExpandDefaultEleId = -1;
-	this.mapRawData = null;
 	this.map = null;
 	this.objFactory = null;
 	this.listAbstractObj = [];
+
+	this.mapRawData = null;
 	this.objSetting = null;
+	this.scoreboardSetting = null;
 };
 
 MapFactory.prototype.initialObj = function(objFactory) {
@@ -17,7 +19,7 @@ MapFactory.prototype.getMapId = function() {
 	return this.mapId;
 };
 
-MapFactory.prototype.loadStepInfoFromFile = function(filePath, callBackFunc) {
+MapFactory.prototype.loadStageInfoFromFile = function(filePath, callBackFunc) {
 	var callBackFuncResetData = function(listMapRawData, objSetting, scoreboardSetting) {
 		this.mapRawData = listMapRawData;
 		this.objSetting = objSetting;

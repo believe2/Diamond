@@ -6,72 +6,90 @@ var ScoreBoard = function(idTag) {
 	this.listCondStageFail = null;
 };
 
-ScoreBoard.prototype.initialObj = function(imgFactory) {
+ScoreBoard.prototype.initialObj = function(imgFactory, eventQueueHandler) {
 	this.imgFactory = imgFactory;
+	this.eventQueueHandler = eventQueueHandler;
 };
 
 ScoreBoard.prototype.setupByMapSetting = function(setting) {
-	console.log(setting);
 	$(this.idTag).empty();
 	this.listCondOpenExit = [];
 	this.listCondStageClear = [];
 	this.listCondStageFail = [];
 
 	for (key in setting) {
-		switch (key) {
-			case 'time_limit':
-				this.addTimeItem(setting[key]);
-				break;
-			default:
-				for (keySubItem in setting[key]) {
-					var condItem = new ObjBehavior(setting[key][keySubItem]);
-					switch(keySubItem) {
-						case 'open_exit_condition':
-							this.listCondOpenExit.push(condItem);
-							break;
-						case 'stage_clear_condition':
-							this.listCondStageClear.push(condItem);
-							break;
-						case 'stage_fail_condition':
-							this.listCondStageFail.push(condItem);
-							break;
-					}
-					if(condItem.isNeedObjCounter()) {
-						this.addItemCounter(condItem.targetObj, condItem.amount);
-					}
-				}
-				break;
+		for (keySubItem in setting[key]) {
+			var condItem = new ObjBehavior(setting[key][keySubItem]);
+			switch(key) {
+				case 'open_exit_condition':
+					this.listCondOpenExit.push(condItem);
+					break;
+				case 'stage_clear_condition':
+					this.listCondStageClear.push(condItem);
+					break;
+				case 'stage_fail_condition':
+					this.listCondStageFail.push(condItem);
+					break;
+			}
+			var counter = null;
+			switch(condItem.isNeedObjCounter()) {
+				case 'COUNTER_INCREASE':
+					counter = this.addIncreaseItemCounter(condItem.targetObj, condItem.amount);
+					break;
+				case 'COUNTER_DECREASE':
+					counter = this.addDecreaseCounterItem(condItem.targetObj, condItem.max, condItem.autoCount);
+					break;
+			}
+			if(counter != null) {
+				condItem.setCounterTargetObj(counter);
+			}
 		}
 	}
 };
 
-ScoreBoard.prototype.addTimeItem = function(maxTime, callbackFuncTimeOver) {
+ScoreBoard.prototype.addDecreaseCounterItem = function(itemName, maxNo, isAutoCount, callbackFunc) {
 	$(this.idTag).append('<table>' + 
 		                 '<tr><td>' + 
-		                 '<img src="' + this.imgFactory.getIconPath('clock') + '" alt="Smiley face" height="70" width="70"></td><td>' + 
-		                 '<div class="clock" id="clock_time"></div>' + 
+		                 '<img src="' + this.imgFactory.getIconPath(itemName) + '" alt="Smiley face" height="70" width="70"></td><td>' + 
+		                 '<div class="clock" id="counter_decrease_' + itemName + '"></div>' + 
 		                 '</td></tr></table>');
-	var clockTime = new Counter("#clock_time", callbackFuncTimeOver);
-	clockTime.initialCounter(maxTime, true);
-	return clockTime;
+	var counterDecrease = new Counter("#counter_decrease_" + itemName, callbackFunc);
+	counterDecrease.initialCounter(maxNo, isAutoCount);
+	return counterDecrease;
 };
 
-ScoreBoard.prototype.addItemCounter = function(itemName, maxNo) {
+ScoreBoard.prototype.addIncreaseItemCounter = function(itemName, maxNo, callbackFunc) {
 	$(this.idTag).append('<table>' +
 						 '<tr>'+
 			             '<td><img src="' + this.imgFactory.getIconPath(itemName) +'" alt="Smiley face" height="50" width="70"></td>' +
-						 '<td><div class="clock" id="clock_curNum_' + itemName + '"></div></td>' +
+						 '<td><div class="clock" id="counter_curNum_' + itemName + '"></div></td>' +
 						 '<td><div class="myTitle">/</div></td>' +
-						 '<td><div class="clock" id="clock_targetNum_' + itemName + '"></div></td>' +
+						 '<td><div class="clock" id="counter_targetNum_' + itemName + '"></div></td>' +
 						 '</tr>' +
 						 '</table>');
-	var clockCurNum = new Counter("#clock_curNum_" + itemName);
-	clockCurNum.initialCounter(0);
-	var clockTargetNum =  new Counter("#clock_targetNum_" + itemName);
-	clockTargetNum.initialCounter(maxNo);
-	return clockCurNum;
+	var counterCurNum = new Counter("#counter_curNum_" + itemName, callbackFunc);
+	counterCurNum.initialCounter(0);
+	var counterTargetNum =  new Counter("#counter_targetNum_" + itemName);
+	counterTargetNum.initialCounter(maxNo);
+	return counterCurNum;
 };
 
-ScoreBoard.prototype.update = function(item) {
+ScoreBoard.prototype.start = function() {
+	var callbackFuncStartAutoCount = function(ele) {
+		ele.startAutoCount();
+	};
+	this.processEachConditionEle(callbackFuncStartAutoCount);
+};
+
+ScoreBoard.prototype.processEachConditionEle = function(callbackfunc) {
+	var listTemp = [this.listCondOpenExit, this.listCondStageClear, this.listCondStageFail];
+	for (keyList in listTemp) {
+		for(keyEle in listTemp[keyList]) {
+			callbackfunc(listTemp[keyList][keyEle]);
+		}
+	}
+}
+
+ScoreBoard.prototype.processEvent = function(event) {
 
 };

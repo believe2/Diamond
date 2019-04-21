@@ -16,7 +16,7 @@ var GameFrame = function(ctx, canvGame){
 	this.eventQueueHandler.initialObj(this.mapFactory, this.objFactory, this.soundEffectFactory, this.gamePanel);
 	this.mapFactory.initialObj(this.objFactory);
 	this.actionFactory.initialObj(this.eventQueueHandler);
-	this.scoreBoard.initialObj(this.imgFactory);
+	this.scoreBoard.initialObj(this.imgFactory, this.eventQueueHandler);
 	this.gamePanel.setMap(this.mapFactory);
 
 	this.curStep = 9;
@@ -31,8 +31,8 @@ GameFrame.prototype.initial = function() {
 	//counter - time
 	//this.clockTime = new Counter("#clock_time", this.slotBurstMyself.bind(this));
 	//counter - diamond target
-	this.clockDiamondEatNum = new Counter("#clock_diamondEatNum", null);
-	this.clockDiamondTargetNum = new Counter("#clock_diamondTarget", null);
+	//this.clockDiamondEatNum = new Counter("#clock_diamondEatNum", null);
+	//this.clockDiamondTargetNum = new Counter("#clock_diamondTarget", null);
 	//monitor to play background music
 	this.soundEffectFactory.initial();
 	this.backgroundMusicFactory.initial();
@@ -51,13 +51,13 @@ GameFrame.prototype.loadMap = function(loadType, res) {
 		self.eatDiamondTargetNum = self.stepSetting.getValue('diamond_target');
 		self.timeLimit = self.stepSetting.getValue('time_limit');
 		self.eventQueueHandler.changePanelStartPos(self.mapFactory.getOneOfObj('MASTER'));
-		self.scoreBoard.setupByMapSetting(scoreboardSetting);
+		self.scoreBoard.setupByMapSetting(self.mapFactory.scoreboardSetting);
 		self.initialScoreBoard();
 	};
 	self.curEatDiamondNum = 0;
 	switch(loadType) {
 		case 'FROM_FILE': 
-			self.mapFactory.loadStepInfoFromFile(res, funcInitialStep);
+			self.mapFactory.loadStageInfoFromFile(res, funcInitialStep);
 			break;
 		case 'SYNC':
 			self.mapFileProcessor.loadMapJsonObj(res);
@@ -81,7 +81,7 @@ GameFrame.prototype.initialScoreBoard = function() {
 
 GameFrame.prototype.addEatenDiamondNum = function() {
 	this.curEatDiamondNum = this.curEatDiamondNum + 1;
-	this.clockDiamondEatNum.increase();
+	//this.clockDiamondEatNum.increase();
 	this.slotPlayEffectSound('DING');
 	if(this.curEatDiamondNum >= this.eatDiamondTargetNum) {
 		this.slotPlayEffectSound('BURP');
@@ -116,6 +116,7 @@ GameFrame.prototype.slotStartGame = function() {
 	};
 	this.mapFactory.processMapEle(callBackFuncStartObjAction.bind(this), true);
 	//this.clockTime.start();
+	this.scoreBoard.start();
 	this.isGameStart = true;
 	this.arrowHint.setIsPaint(true);
 	this.eventQueueHandler.start();
