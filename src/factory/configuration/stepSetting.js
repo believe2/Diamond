@@ -1,5 +1,4 @@
 var StepSetting = function () {
-	this.setting = null;
 	this.listObjSetting = null;
 };
 
@@ -7,16 +6,8 @@ StepSetting.prototype.initialObj = function(mapFactory) {
 	this.mapFactory = mapFactory;
 };
 
-StepSetting.prototype.initial = function(setting) {
-	if(setting == null) {
-		return;
-	}
-	this.setting = setting;
-	this.listObjSetting = this.setting.obj_setting;
-};
-
 StepSetting.prototype.getValue = function(key) {
-	return this.setting[key];
+	return this.listObjSetting[key];
 };
 
 StepSetting.prototype.getAllSetting = function() {
@@ -38,7 +29,10 @@ StepSetting.prototype.getSetting = function(pos, objId) {
 	return result;
 };
 
-StepSetting.prototype.setSettingToAllObject = function() {
+StepSetting.prototype.setSettingToAllObject = function(listObjSetting) {
+	if(listObjSetting != null) {
+		this.listObjSetting = listObjSetting;
+	}
 	var callBackFuncResetObjVarSetting = function(pos, ele) {
 		if(ele == null) {
 			return;

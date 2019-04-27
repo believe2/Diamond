@@ -4,7 +4,7 @@ var Master = function (args) {
  						'master-right1.png', 'master-right2.png', 'master-right3.png', 'master-right4.png',
  						'master-up1.png', 'master-up2.png', 'master-up3.png', 'master-up4.png',
  						'master-down1.png', 'master-down2.png', 'master-down3.png', 'master-down4.png'];
- 	this.listCanPass = ['SAND'];
+ 	this.listCanPass = ['SAND', 'EXIT%isOpenExit'];
  	this.burst = {source: ['MONSTER_CUBE', 'BUTTERFLY'], type: this.burstType['3x3_GRID'], prod: null};
  	this.eat = ['DIAMOND'];
  	this.push = ['STONE'];

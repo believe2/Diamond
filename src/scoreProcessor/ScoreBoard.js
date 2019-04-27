@@ -7,9 +7,10 @@ var ScoreBoard = function(idTag) {
 	this.listCondStageFail = null;
 };
 
-ScoreBoard.prototype.initialObj = function(imgFactory, eventQueueHandler) {
+ScoreBoard.prototype.initialObj = function(imgFactory, eventQueueHandler, mapFactory) {
 	this.imgFactory = imgFactory;
 	this.eventQueueHandler = eventQueueHandler;
+	this.mapFactory = mapFactory;
 };
 
 ScoreBoard.prototype.setupByMapSetting = function(setting) {
@@ -23,7 +24,7 @@ ScoreBoard.prototype.setupByMapSetting = function(setting) {
 
 	for (key in this.setting) {
 		for (keySubItem in this.setting[key]) {
-			var condItem = new ObjBehavior(this.setting[key][keySubItem]);
+			var condItem = new ObjBehavior(this.setting[key][keySubItem], key);
 			switch(key) {
 				case 'open_exit_condition':
 					this.listCondOpenExit.push(condItem);
@@ -91,15 +92,62 @@ ScoreBoard.prototype.start = function() {
 	this.processEachConditionEle(callbackFuncStartAutoCount);
 };
 
-ScoreBoard.prototype.processEachConditionEle = function(callbackfunc) {
+ScoreBoard.prototype.processEachConditionEle = function(callbackfuncEle, callbackfuncList) {
 	var listTemp = [this.listCondOpenExit, this.listCondStageClear, this.listCondStageFail];
 	for (keyList in listTemp) {
 		for(keyEle in listTemp[keyList]) {
-			callbackfunc(listTemp[keyList][keyEle]);
+			callbackfuncEle(listTemp[keyList][keyEle]);
+		}
+		if(callbackfuncList != null) {
+			callbackfuncList(listTemp[keyList]);
 		}
 	}
-}
+};
 
 ScoreBoard.prototype.processEvent = function(event) {
+	var callbackFuncCheckEvent = function(ele) {
+		ele.checkEventAddOneToCounterTargetObj(event);
+	};
+	var callbackFuncCheckListArrive = function(list) {
+		var isAllArrive = true;
+		var type = null;
+		for(keyEle in list) {
+			type = list[keyEle].getType();
+			if(!list[keyEle].checkArriveGoal()) {
+				isAllArrive = false;
+				break;
+			}
+		}
+		if(isAllArrive && type != null) {
+			switch(type) {
+				case 'open_exit_condition':
+					this.openExit();
+					break;
+				case 'stage_clear_condition':
+					this.clearStage();
+					break;
+				case 'stage_fail_condition':
+					this.loseStage();
+					break;
+			}
+		}
+	}
+	this.processEachConditionEle(callbackFuncCheckEvent, callbackFuncCheckListArrive.bind(this));
+};
+
+ScoreBoard.prototype.openExit = function() {
+	var listObj = this.mapFactory.getAllOfObj('EXIT');
+	for(key in listObj) {
+		if(!listObj[key].isOpenExit()) {
+			listObj[key].triggerOpening();
+		}
+	}
+};
+
+ScoreBoard.prototype.clearStage = function() {
+
+};
+
+ScoreBoard.prototype.loseStage = function() {
 
 };

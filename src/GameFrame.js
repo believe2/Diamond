@@ -13,10 +13,10 @@ var GameFrame = function(ctx, canvGame){
 
 	this.stepSetting.initialObj(this.mapFactory);
 	this.objFactory.initialObj(this.gamePanel, this.imgFactory, this.mapFactory, this.actionFactory);
-	this.eventQueueHandler.initialObj(this.mapFactory, this.objFactory, this.soundEffectFactory, this.gamePanel);
+	this.eventQueueHandler.initialObj(this.mapFactory, this.objFactory, this.soundEffectFactory, this.gamePanel, this.scoreBoard);
 	this.mapFactory.initialObj(this.objFactory);
 	this.actionFactory.initialObj(this.eventQueueHandler);
-	this.scoreBoard.initialObj(this.imgFactory, this.eventQueueHandler);
+	this.scoreBoard.initialObj(this.imgFactory, this.eventQueueHandler, this.mapFactory);
 	this.gamePanel.setMap(this.mapFactory);
 
 	this.curStep = 9;
@@ -41,12 +41,11 @@ GameFrame.prototype.loadMap = function(loadType, res) {
 	var self = this;
 	var funcInitialStep = function(listMapRawData, objectSetting, scoreboardSetting) {
 		self.mapFactory.createObjByMap();
-		self.stepSetting.initial(objectSetting);
-		self.stepSetting.setSettingToAllObject();
+		self.stepSetting.setSettingToAllObject(objectSetting);
 		self.eventQueueHandler.changePanelStartPos(self.mapFactory.getOneOfObj('MASTER'));
 		self.scoreBoard.setupByMapSetting(scoreboardSetting);
 	};
-	self.curEatDiamondNum = 0;
+	self.objFactory.initialNoForEachObj();
 	switch(loadType) {
 		case 'FROM_FILE': 
 			self.mapFactory.loadStageInfoFromFile(res, funcInitialStep);
@@ -58,25 +57,6 @@ GameFrame.prototype.loadMap = function(loadType, res) {
 		default:
 			funcInitialStep();
 			break;
-	}
-};
-
-GameFrame.prototype.addEatenDiamondNum = function() {
-	this.curEatDiamondNum = this.curEatDiamondNum + 1;
-	//this.clockDiamondEatNum.increase();
-	this.slotPlayEffectSound('DING');
-	if(this.curEatDiamondNum >= this.eatDiamondTargetNum) {
-		this.slotPlayEffectSound('BURP');
-		this.openExit();
-	}
-};
-
-GameFrame.prototype.openExit = function() {
-	var listExit = this.mapFactory.getAllOfObj('EXIT');
-	var index = 0;
-	while(index < listExit.length) {
-		listExit[index].callFunc(0);
-		index = index + 1;
 	}
 };
 
@@ -124,32 +104,12 @@ GameFrame.prototype.slotReloadGame = function(loadType, res) {
 	this.loadMap(loadType, res);
 };
 
-GameFrame.prototype.slotOnMasterGoExit = function() {
-	var objExit = this.mapFactory.getOneOfObj("EXIT");
-	if(objExit != null && objExit.getIsOpen()) {
-		this.slotGoNextStep();
-	}
-}
-
 GameFrame.prototype.slotSyncMap = function(args) {
 	this.slotReloadGame('SYNC', args);
-};
-
-GameFrame.prototype.slotBurstMyself = function() {
-	if(this.isGameStart) {
-		var objMaster = this.mapFactory.getOneOfObj("MASTER");
-		if(objMaster != null) {
-			objMaster.triggerBurstEvent();
-		}
-	}
 };
 
 GameFrame.prototype.slotGoNextStep = function() {
 	this.curStep = this.curStep + 1;
 	this.slotStopGame();
 	this.loadMap('FROM_FILE', this.curStep + ".map");
-};
-
-GameFrame.prototype.slotPlayEffectSound = function(id) {
-	this.soundEffectFactory.playSound(id);
 };

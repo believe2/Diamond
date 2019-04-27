@@ -47,26 +47,29 @@
 				"main_object": "MASTER",
 				"action": "EAT",
 				"target": "DIAMOND",
-				"amount": 75
+				"amount": 55,
+				"isBypassSubId": true
 			}
 		],
 		"stage_clear_condition": [
 			{
 				"main_object": "MASTER",
 				"action": "ARRIVE",
-				"target": "EXIT"
+				"target": "EXIT",
+				"isBypassSubId": true
 			}
 		],
 		"stage_fail_condition": [
 			{
 				"main_object": "MASTER",
-				"action": "DIED"
+				"action": "DIED",
+				"isBypassSubId": true
 			},
 			{
 				"action": "ARRIVE",
 				"target": "TIME",
 				"amount": 0,
-				"max": 144,
+				"max": 178,
 				"auto_count": true
 			}
 		]

@@ -18,7 +18,7 @@ var BaseObject = function (args) {
 
 	this.curPos = args.pos;
 	this.curImage = 0;
-	this.id = args.id;
+	this.id = args.id + "%" + args.subId;
 	this.genWay = this.GEN_WAY_INITIAL;
 	this.listCanPass = args.listCanPass;
 	
@@ -61,6 +61,11 @@ BaseObject.prototype.getCurPos = function() {
 
 //get id referring this object
 BaseObject.prototype.getId = function() {
+	return this.id.split("%")[0];
+};
+
+//get full id referring this object
+BaseObject.prototype.getFullId = function() {
 	return this.id;
 };
 
@@ -93,7 +98,7 @@ BaseObject.prototype.isPassby = function(pos) {
 				var index = 1;
 				isOk = true;
 				while(isOk && index < this.listCanPass.length) {
-					if(this.listCanPass[index] == objInfo.id) {
+					if(this.listCanPass[index] == objInfo.getId()) {
 						isOk = false;
 					}
 					index = index + 1;
@@ -103,7 +108,7 @@ BaseObject.prototype.isPassby = function(pos) {
 				var index = 0;
 				if(this.listCanPass != null && objInfo != null) {
 					while(!isOk && index < this.listCanPass.length) {
-						if(this.listCanPass[index] == objInfo.id) {
+						if(this.listCanPass[index] == objInfo.getId()) {
 							isOk = true;
 						}
 						index = index + 1;

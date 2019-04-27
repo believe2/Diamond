@@ -45,6 +45,12 @@ ObjFactory.prototype.initialObj = function(gamePanel, imgFactory, mapFactory, ac
  	this.actionFactory = actionFactory;
 };
 
+ObjFactory.prototype.initialNoForEachObj = function() {
+	for (key in this.mapNameToInfo) {
+		this.mapNameToInfo[key].no = 0;
+	}
+};
+
 ObjFactory.prototype.create = function(objId) {
  	var target = null;
  	var obj = null;
@@ -58,6 +64,9 @@ ObjFactory.prototype.create = function(objId) {
  		args.id = this.listObj[args.id];
  	}
  	if(target != null) {
+ 		args.subId = this.mapNameToInfo[args.id].no;
+ 		this.mapNameToInfo[args.id].no = this.mapNameToInfo[args.id].no + 1;
+
  		args.map = this.map;
  		args.actionFactory = this.actionFactory;
  		args.gamePanel = this.gamePanel;

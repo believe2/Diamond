@@ -2,32 +2,28 @@ var Exit = function(args) {
 	BaseObject.call(this, args);
 
 	this.listImage = ['tile.jpg', 'exit.jpg'];
-
-	this.triggerMoveEvent = args.bindFuncMove;
 	this.isOpen = false;
-
-	this.registerAction(0, this.CYCLE_TRIGER * 5, this.monitorAction.bind(this));
-	this.registerFunc(0, this.triggerOpening.bind(this));
+	this.animateGameObject = this.actionFactory.create({actionType: 'ANIMATE_GAME_OBJECT',
+		                                                mainObj: this
+	                                                  });
 };
 
 Exit.prototype = Object.create(BaseObject.prototype);
 Exit.prototype.superClass = Object.create(BaseObject.prototype);
 Exit.prototype.constructor = Exit;
 
-Exit.prototype.monitorAction = function() {
-	if(this.isOpen) {
-		this.triggerMoveEvent(this, null, this.nextImg());
-	}
-};
-
 Exit.prototype.triggerOpening = function() {
+	console.log('open');
+	this.registerAction(1, 500, this.animateGameObject.doAction.bind(this.animateGameObject));
+	this.startAction(1);
 	this.isOpen = true;
 };
 
-Exit.prototype.nextImg = function() {
-	return (this.curImage + 1) % this.listImage.length;
+Exit.prototype.triggerClosing = function() {
+	this.stopAction(1);
+	this.isOpen = false;
 };
 
-Exit.prototype.getIsOpen = function() {
+Exit.prototype.isOpenExit = function() {
 	return this.isOpen;
 };

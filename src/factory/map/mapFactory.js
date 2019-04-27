@@ -80,7 +80,7 @@ MapFactory.prototype.getOneOfObj = function(objId) {
 	return result;
 };
 
-MapFactory.prototype.getAllOfObj = function(objId) {  //fixfix
+MapFactory.prototype.getAllOfObj = function(objId) {
 	var result = [];
 	var callbackfuncGetObj = function(pos, ele) {
 		if(ele != null && ele.getId() == objId) {

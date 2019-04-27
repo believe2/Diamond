@@ -1,5 +1,5 @@
 var MapFileProcessor = function () {
-	this.listMapRawData = [];
+	this.listMapRawData = null;
 	this.objSetting = null;
 	this.scoreboardSetting = null;
 };

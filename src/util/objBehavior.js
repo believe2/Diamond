@@ -1,10 +1,13 @@
-var ObjBehavior = function(json) {
+var ObjBehavior = function(json, type) {
+	this.type = type;
+
 	this.mainObj = json.main_object;
 	this.action = json.action;
 	this.targetObj = json.target;
 	this.amount = json.amount;
 	this.max = json.max;
 	this.autoCount = json.auto_count;
+	this.isBypassSubId = json.isBypassSubId;
 	this.counterTargetObj = null;
 };
 
@@ -35,7 +38,34 @@ ObjBehavior.prototype.initialCounter = function() {
 };
 
 ObjBehavior.prototype.checkEventAddOneToCounterTargetObj = function(event) {
-	if(event == (this.mainObj + "_" + this.action + "_" + this.targetObj)) {
-		this.counterTargetObj.increase();
+	var tempMainObj = (this.isBypassSubId)?event.mainObj.getId():event.mainObj.getFullId();
+	var tempAction = event.action;
+	var tempTarget = null;
+	if(event.target != null) {
+		tempTarget = (this.isBypassSubId)?event.target.getId():event.target.getFullId();
 	}
+	if(tempMainObj == this.mainObj && tempAction == this.action && tempTarget == this.targetObj) {
+		if(this.isNeedObjCounter() != null) {
+			this.counterTargetObj.increase();
+		}
+	}
+};
+
+ObjBehavior.prototype.checkArriveGoal = function() {
+	var isArriveGoal = false;
+	switch(this.isNeedObjCounter()) {
+		case "COUNTER_INCREASE":
+			isArriveGoal = (this.counterTargetObj.getCurTime() >= this.amount);
+			break;
+		case "COUNTER_DECREASE":
+			isArriveGoal = (this.counterTargetObj.getCurTime() <= 0);
+			break;
+		default:
+			break;
+	}
+	return isArriveGoal;
+};
+
+ObjBehavior.prototype.getType = function() {
+	return this.type;
 };

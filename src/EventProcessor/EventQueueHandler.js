@@ -3,11 +3,12 @@ var EventQueueHandler = function() {
 	this.threadEventHandler = null;
 };
 
-EventQueueHandler.prototype.initialObj = function(mapFactory, objFactory, soundEffectFactory, mainPanel) {
+EventQueueHandler.prototype.initialObj = function(mapFactory, objFactory, soundEffectFactory, mainPanel, scoreboard) {
 	this.map = mapFactory;
 	this.objFactory = objFactory;
 	this.soundEffectFactory = soundEffectFactory;
 	this.mainPanel = mainPanel;
+	this.scoreboard = scoreboard;
 };
 //start thread to listen eventQueue
 EventQueueHandler.prototype.start = function() {  
@@ -85,6 +86,7 @@ EventQueueHandler.prototype.move = function(obj, action) {
 	//set refer object before position
 	if(nextPos != null){
 		this.map.setEle(beforePos, obj.genObjBeforeArea());
+		this.scoreboard.processEvent({mainObj: obj, action: "MOVE_ON_FLOOR", target: this.map.getEle(nextPos.getZDownPos())});
 	}
 };
 
@@ -93,11 +95,18 @@ EventQueueHandler.prototype.push = function(objMaster, posMaster, objTarget, pos
 	var beforePos = objMaster.getCurPos();
 	this.map.setEle(posMaster, objMaster);
 	this.map.setEle(beforePos, objMaster.genObjBeforeArea());
+
+	this.scoreboard.processEvent({mainObj: objMaster, action: "PUSH", target: objTarget});
+	this.scoreboard.processEvent({mainObj: objMaster, action: "MOVE_ON_FLOOR", target: this.map.getEle(posMaster.getZDownPos())});
+	this.scoreboard.processEvent({mainObj: objTarget, action: "MOVE_ON_FLOOR", target: this.map.getEle(posTarget.getZDownPos())});
 };
 
 EventQueueHandler.prototype.eat = function(objMaster, objTarget) {
 	var masterNextPos = objTarget.getCurPos();
 	var beforePos = objMaster.getCurPos();
+	
+	this.scoreboard.processEvent({mainObj: objMaster, action: "EAT", target: objTarget});
+
 	this.destroyObj(masterNextPos);
 	this.map.setEle(masterNextPos, objMaster);
 	this.map.setEle(beforePos, objMaster.genObjBeforeArea());
@@ -121,6 +130,9 @@ EventQueueHandler.prototype.createSingleObj = function(parms) {
 	if(objNew != null) {
 		objNew.setGenWay(objNew.GEN_WAY_FROM_OBJECT);
 		this.map.setEle(pos, objNew);
+
+		this.scoreboard.processEvent({mainObj: objNew, action: "CREATE"});
+
 		if(isStartAction == null || isStartAction == true) {
 			objNew.startAction('ALL');
 		}
@@ -149,6 +161,7 @@ EventQueueHandler.prototype.createMultiObj = function(parms) {
 };
 
 EventQueueHandler.prototype.destroyObj = function(pos) {
+	this.scoreboard.processEvent({mainObj: this.map.getEle(pos), action: "DIED"});
 	this.map.destroyEle(pos);
 };
 
