@@ -36,7 +36,6 @@ Counter.prototype.start = function() {
         	}
         }
 	});
-	
 };
 
 Counter.prototype.stop = function() {
@@ -49,6 +48,10 @@ Counter.prototype.stop = function() {
 Counter.prototype.increase = function() {
 	this.clockTimer.increment();
 };
+
+Counter.prototype.setValue = function(num) {
+	this.clockTimer.setValue(num);
+}
 
 Counter.prototype.getCurTime = function() {
 	return this.clockTimer.getTime();

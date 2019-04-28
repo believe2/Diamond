@@ -3,6 +3,7 @@ var ObjBehavior = function(json, type) {
 	this.counterTargetObj = null;
 	this.isGetBehavior = false;
 	this.callbackfuncMeetBahaviorNextAction = null;
+	this.listBehaviorTypeCount = [];
 
 	this.mainObj = json.main_object;
 	this.action = json.action;
@@ -44,16 +45,30 @@ ObjBehavior.prototype.initialCounter = function() {
 };
 
 ObjBehavior.prototype.checkEventAddOneToCounterTargetObj = function(event) {
-	var tempMainObj = (this.isBypassSubId)?event.mainObj.getId():event.mainObj.getFullId();
+	var tempMainObj = event.mainObj.getId();
 	var tempAction = event.action;
-	var tempTarget = null;
-	if(event.target != null) {
-		tempTarget = (this.isBypassSubId)?event.target.getId():event.target.getFullId();
+	var tempTarget = (event.target != null) ? event.target.getId() : null;
+	if(this.isBypassSubId) {  //count without looking up full object ID
+		if(tempMainObj == this.mainObj && tempAction == this.action && tempTarget == this.targetObj) {
+			this.isGetBehavior = true;
+			if(this.isNeedObjCounter() != null) {
+				this.counterTargetObj.increase();
+			}
+		}
 	}
-	if(tempMainObj == this.mainObj && tempAction == this.action && tempTarget == this.targetObj) {
-		this.isGetBehavior = true;
-		if(this.isNeedObjCounter() != null) {
-			this.counterTargetObj.increase();
+	else {  //count by looking up each type of object with full object ID
+		var tempMainObjFullId = event.mainObj.getFullId();
+		if(tempMainObj == this.mainObj && tempAction == this.action) {
+			if(tempTarget == this.targetObj) {
+				this.listBehaviorTypeCount[tempMainObjFullId] = true;
+			}
+			else {
+				delete this.listBehaviorTypeCount[tempMainObjFullId];
+			}
+			this.counterTargetObj.setValue(Object.keys(this.listBehaviorTypeCount).length);
+		}
+		if(this.action != 'DIED' && tempAction == 'DIED') {
+			delete this.listBehaviorTypeCount[tempMainObjFullId];
 		}
 	}
 };

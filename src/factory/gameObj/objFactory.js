@@ -18,7 +18,8 @@ var ObjFactory = function () {
  		10:"TILE",
  		11:"BUTTERFLY",
  		12:"MASTER",
- 		13:"EXIT"
+ 		13:"EXIT",
+ 		14:"WoodFloor"
  	};
  	this.mapNameToInfo = {
  		'ROAD': 		{builder: Road},
@@ -34,7 +35,8 @@ var ObjFactory = function () {
  		'TILE':   		{builder: Tile},
  		'BUTTERFLY':    {builder: Butterfly},
  		'MASTER':       {builder: Master},
- 		'EXIT':         {builder: Exit}
+ 		'EXIT':         {builder: Exit},
+ 		'WoodFloor':    {builder: WoodFloor}
  	};
 };
 
