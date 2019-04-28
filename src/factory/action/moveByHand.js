@@ -44,6 +44,13 @@ MoveByHand.prototype.doAction = function() {
 					                              });
 				hasMoveNextPos = true;
 			}
+			else if(this.mainObj.isMeetActionObject('MASTER_ARRIVE', countNextPos)) {  //master goin another object
+				this.eventQueueHandler.throwEvent('EVENT_MASTER_ARRIVE_OBJECT', 
+					                              this.mainObj, 
+					                              null, 
+					                              {targetObj: this.map.getEle(countNextPos)
+					                              });
+			}
 			if(hasMoveNextPos) {
 				this.eventQueueHandler.throwEvent('EVENT_PANEL_ON_OBJECT_MOVE', this.mainObj);
 				this.mainObj.doNextWhenMove();

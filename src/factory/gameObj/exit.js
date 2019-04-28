@@ -13,7 +13,6 @@ Exit.prototype.superClass = Object.create(BaseObject.prototype);
 Exit.prototype.constructor = Exit;
 
 Exit.prototype.triggerOpening = function() {
-	console.log('open');
 	this.registerAction(1, 500, this.animateGameObject.doAction.bind(this.animateGameObject));
 	this.startAction(1);
 	this.isOpen = true;

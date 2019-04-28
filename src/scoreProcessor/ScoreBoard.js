@@ -7,10 +7,11 @@ var ScoreBoard = function(idTag) {
 	this.listCondStageFail = null;
 };
 
-ScoreBoard.prototype.initialObj = function(imgFactory, eventQueueHandler, mapFactory) {
+ScoreBoard.prototype.initialObj = function(imgFactory, eventQueueHandler, mapFactory, gameFrame) {
 	this.imgFactory = imgFactory;
 	this.eventQueueHandler = eventQueueHandler;
 	this.mapFactory = mapFactory;
+	this.gameFrame = gameFrame;
 };
 
 ScoreBoard.prototype.setupByMapSetting = function(setting) {
@@ -24,18 +25,25 @@ ScoreBoard.prototype.setupByMapSetting = function(setting) {
 
 	for (key in this.setting) {
 		for (keySubItem in this.setting[key]) {
+			var callbackFunc = null;
 			var condItem = new ObjBehavior(this.setting[key][keySubItem], key);
 			switch(key) {
 				case 'open_exit_condition':
 					this.listCondOpenExit.push(condItem);
+					callbackFunc = this.openExit.bind(this);
 					break;
 				case 'stage_clear_condition':
 					this.listCondStageClear.push(condItem);
+					callbackFunc = this.clearStage.bind(this);
 					break;
 				case 'stage_fail_condition':
 					this.listCondStageFail.push(condItem);
+					callbackFunc = this.loseStage.bind(this);
 					break;
 			}
+
+			condItem.setMeetBahaviorNextAction(callbackFunc);
+
 			var counter = null;
 			switch(condItem.isNeedObjCounter()) {
 				case 'COUNTER_INCREASE':
@@ -110,26 +118,16 @@ ScoreBoard.prototype.processEvent = function(event) {
 	};
 	var callbackFuncCheckListArrive = function(list) {
 		var isAllArrive = true;
-		var type = null;
+		var getFirstEle = null;
 		for(keyEle in list) {
-			type = list[keyEle].getType();
+			getFirstEle = list[keyEle];
 			if(!list[keyEle].checkArriveGoal()) {
 				isAllArrive = false;
 				break;
 			}
 		}
-		if(isAllArrive && type != null) {
-			switch(type) {
-				case 'open_exit_condition':
-					this.openExit();
-					break;
-				case 'stage_clear_condition':
-					this.clearStage();
-					break;
-				case 'stage_fail_condition':
-					this.loseStage();
-					break;
-			}
+		if(isAllArrive && getFirstEle != null) {
+			getFirstEle.callNextAction();
 		}
 	}
 	this.processEachConditionEle(callbackFuncCheckEvent, callbackFuncCheckListArrive.bind(this));
@@ -145,7 +143,7 @@ ScoreBoard.prototype.openExit = function() {
 };
 
 ScoreBoard.prototype.clearStage = function() {
-
+	this.gameFrame.slotGoNextStep();
 };
 
 ScoreBoard.prototype.loseStage = function() {

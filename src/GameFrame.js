@@ -16,7 +16,7 @@ var GameFrame = function(ctx, canvGame){
 	this.eventQueueHandler.initialObj(this.mapFactory, this.objFactory, this.soundEffectFactory, this.gamePanel, this.scoreBoard);
 	this.mapFactory.initialObj(this.objFactory);
 	this.actionFactory.initialObj(this.eventQueueHandler);
-	this.scoreBoard.initialObj(this.imgFactory, this.eventQueueHandler, this.mapFactory);
+	this.scoreBoard.initialObj(this.imgFactory, this.eventQueueHandler, this.mapFactory, this);
 	this.gamePanel.setMap(this.mapFactory);
 
 	this.curStep = 9;

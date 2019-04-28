@@ -29,10 +29,6 @@ var BaseObject = function (args) {
 	this.mapRegisteredFunc = [];
 
 	this.isNeedAbstractObjInMap = false;
-
-	this.dkCounter = new DeLockCounter(this.COUNTER_MAX);
-
-	this.funcGetObjInfoByPos = args.bindFuncGetObjInfoByPos;
 };
 
 //load each image through given imageFactory based on setted image name in listImage
@@ -92,28 +88,24 @@ BaseObject.prototype.isPassby = function(pos) {
 	if(objInfo == null) {
 		isOk = true;
 	}
-	else if(objInfo != "ERROR"){
-		if(this.listCanPass != null) {
-			if(this.listCanPass[0] == 'ALL') {
-				var index = 1;
-				isOk = true;
-				while(isOk && index < this.listCanPass.length) {
-					if(this.listCanPass[index] == objInfo.getId()) {
-						isOk = false;
-					}
-					index = index + 1;
+	else if(this.listCanPass != null) {
+		if(this.listCanPass[0] == 'ALL') {
+			var index = 1;
+			isOk = true;
+			while(isOk && index < this.listCanPass.length) {
+				if(this.listCanPass[index] == objInfo.getId()) {
+					isOk = false;
 				}
+				index = index + 1;
 			}
-			else {
-				var index = 0;
-				if(this.listCanPass != null && objInfo != null) {
-					while(!isOk && index < this.listCanPass.length) {
-						if(this.listCanPass[index] == objInfo.getId()) {
-							isOk = true;
-						}
-						index = index + 1;
-					}
+		}
+		else {
+			var index = 0;
+			while(!isOk && index < this.listCanPass.length) {
+				if(this.listCanPass[index] == objInfo.getId()) {
+					isOk = true;
 				}
+				index = index + 1;
 			}
 		}
 	}
@@ -140,7 +132,6 @@ BaseObject.prototype.isTouchObj = function(objId) {
 	var index = 0;
 	var isTouch = false;
 	while(!isTouch && index < listCheckPos.length) {
-		//if(this.funcGetObjInfoByPos(listCheckPos[index]) != null && this.funcGetObjInfoByPos(listCheckPos[index]).id == objId) {
 		if(this.map.getEle(listCheckPos[index]) != null && this.map.getEle(listCheckPos[index]).getId() == objId) {
 			isTouch = true;
 		}
@@ -156,31 +147,6 @@ BaseObject.prototype.update = function(nextPos, nextImage) {
 	}
 	if(nextImage != null) {
 		this.curImage = nextImage;
-	}
-};
-
-BaseObject.prototype.deLockRun = function(judgeResult, funcDeLockRun, args) {
-	if(judgeResult == null) {
-		this.dkCounter.setLock(true);
-	}
-	else {
-		if(this.dkCounter.isLock()) {
-			this.dkCounter.setLock(false);
-		}
-		if(this.dkCounter.add()) {
-			funcDeLockRun(args);
-		}
-	}
-};
-
-BaseObject.prototype.registerFunc = function(id, func) {
-	this.mapRegisteredFunc[id] = func;
-};
-
-BaseObject.prototype.callFunc = function(id, args) {
-	var func = this.mapRegisteredFunc[id];
-	if(func != null) {
-		func(args);
 	}
 };
 
@@ -250,8 +216,4 @@ BaseObject.prototype.setIsDelObj = function(isDelObj) {
 
 BaseObject.prototype.getIsNeedAbstractObjInMap = function() {
 	return this.isNeedAbstractObjInMap;
-};
-
-BaseObject.prototype.doNextWhenMove = function() {
-	//interface
 };

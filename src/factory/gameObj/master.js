@@ -4,10 +4,11 @@ var Master = function (args) {
  						'master-right1.png', 'master-right2.png', 'master-right3.png', 'master-right4.png',
  						'master-up1.png', 'master-up2.png', 'master-up3.png', 'master-up4.png',
  						'master-down1.png', 'master-down2.png', 'master-down3.png', 'master-down4.png'];
- 	this.listCanPass = ['SAND', 'EXIT%isOpenExit'];
+ 	this.listCanPass = ['SAND'];
  	this.burst = {source: ['MONSTER_CUBE', 'BUTTERFLY'], type: this.burstType['3x3_GRID'], prod: null};
  	this.eat = ['DIAMOND'];
  	this.push = ['STONE'];
+ 	this.goin = ['EXIT%isOpenExit'];
  	this.lockMoveTime = 370;
  	this.listEnableMoveDirVector = [new Position(-1,0,0), new Position(1,0,0), new Position(0,-1,0), new Position(0,1,0)];
 	this.curImage = 12;
@@ -99,13 +100,23 @@ Master.prototype.isMeetActionObject = function(type, position) {
 		case 'MASTER_PUSH':
 			listCheck = this.push;
 			break;
+		case 'MASTER_ARRIVE':
+			listCheck = this.goin;
+			break;
 	}
-	var targetObj = this.map.getEleId(position);
+	var targetObj = this.map.getEle(position);
 	var isMeetTarget = false;
 	var index = 0;
 	while(!isMeetTarget && index < listCheck.length) {
-		if(listCheck[index] == targetObj) {
+		if(listCheck[index] == targetObj.getId()) {
 			isMeetTarget = true;
+		}
+		else if(listCheck[index].indexOf('%') > -1) {
+			var tempObjId = listCheck[index].split('%')[0];
+			var tempFuncCheck = listCheck[index].split('%')[1];
+			if(tempObjId == targetObj.getId() && targetObj[tempFuncCheck] != null && targetObj[tempFuncCheck]()) {
+				isMeetTarget = true;
+			}
 		}
 		index = index + 1;
 	}

@@ -68,6 +68,9 @@ EventQueueHandler.prototype.selectProcessEvent = function(eventType, obj, action
 		case 'EVENT_MASTER_EAT_OBJECT' :
 			this.eat(obj, parms.targetObj);
 			break;
+		case 'EVENT_MASTER_ARRIVE_OBJECT' :
+			this.arriveOtherObj(obj, parms.targetObj);
+			break;
 		case 'EVENT_PANEL_ON_OBJECT_MOVE' :
 			this.changePanelStartPos(obj);
 			break;
@@ -110,6 +113,10 @@ EventQueueHandler.prototype.eat = function(objMaster, objTarget) {
 	this.destroyObj(masterNextPos);
 	this.map.setEle(masterNextPos, objMaster);
 	this.map.setEle(beforePos, objMaster.genObjBeforeArea());
+};
+
+EventQueueHandler.prototype.arriveOtherObj = function(objMaster, objExit) {
+	this.scoreboard.processEvent({mainObj: objMaster, action: "ARRIVE", target: objExit});
 };
 
 EventQueueHandler.prototype.transformObjImg = function(obj) {
