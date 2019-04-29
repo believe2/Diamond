@@ -16,9 +16,11 @@ var Master = function (args) {
 
 	this.isMoveLasting = false;
 	this.isLockMove = false;
+	this.isBurstYourself = false;
 
 	this.meetCheckBurst = this.actionFactory.create({actionType: 'MEET_CHECK_BURST',
-		                                             mainObj: this
+		                                             mainObj: this,
+		                                             checkBurstFunc: this.getIsBurstYourself.bind(this)
 		                                           });
 	this.animateGameObject = this.actionFactory.create({actionType: 'ANIMATE_GAME_OBJECT',
 		                                                mainObj: this
@@ -54,6 +56,14 @@ Master.prototype.getIsLockMove = function() {
 Master.prototype.setController = function(panel) {
 	this.gamePanel.bindOnMouseDownEvent(this.letMasterMove.bind(this));
 	this.gamePanel.bindOnMouseUpEvent(this.letMasterStopMove.bind(this));
+};
+
+Master.prototype.setBurstYourself = function() {
+	this.isBurstYourself = true;
+};
+
+Master.prototype.getIsBurstYourself = function() {
+	return this.isBurstYourself;
 };
 
 Master.prototype.letMasterMove = function(clickPos) {

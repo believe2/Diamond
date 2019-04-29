@@ -47,14 +47,14 @@
 				"main_object": "MASTER",
 				"action": "EAT",
 				"target": "DIAMOND",
-				"amount": 1,
+				"amount": 60,
 				"isBypassSubId": true
 			},
 			{
 				"main_object": "STONE",
 				"action": "MOVE_ON_FLOOR",
 				"target": "WoodFloor",
-				"amount": 10,
+				"amount": 7,
 				"isBypassSubId": false
 			}
 		],

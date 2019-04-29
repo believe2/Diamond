@@ -143,7 +143,7 @@ MapFactory.prototype.getMapLevelNo = function() {
 	return this.map.length;
 };
 
-MapFactory.prototype.getAllObjCanPassPos = function(objId) {  //fixfix
+MapFactory.prototype.getAllObjCanPassPos = function(objId) {
 	var listPosCanPass = [];
 	var callBackFuncGetAllObjCanPassPos = function(pos, ele) {
 		if(ele != null && ele.getId() == objId) {
