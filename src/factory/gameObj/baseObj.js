@@ -13,14 +13,12 @@ var BaseObject = function (args) {
 	this.GEN_WAY_FROM_OBJECT = 1;
 	this.GEN_WAY_ABSTRACT = 2;
 
-	this.COUNTER_MAX = 5;
-	this.CYCLE_TRIGER = 200;
-
 	this.curPos = args.pos;
 	this.curImage = 0;
 	this.id = args.id + "%" + args.subId;
 	this.genWay = this.GEN_WAY_INITIAL;
 	this.listCanPass = args.listCanPass;
+	this.objInMapLevel = 1;
 	
 	this.burst = args.burst;
 	this.mapRegisteredAction = [];
@@ -34,10 +32,24 @@ var BaseObject = function (args) {
 //load each image through given imageFactory based on setted image name in listImage
 BaseObject.prototype.setListImageByImageFactory = function(imgFactory) {
 	var index = 0;
+	this.listImageName = [];
  	while(index < this.listImage.length) {
+ 		this.listImageName[index] = imgFactory.getDir() + "/" + this.listImage[index];
  		this.listImage[index] = imgFactory.load(this.listImage[index]);
  		index = index + 1;
  	}
+ 	if(this.specificImageName != null) {
+ 		this.specificImageName = imgFactory.getDir() + "/" + this.specificImageName;
+ 	}
+};
+
+BaseObject.prototype.getRepresentativeImagePath = function() {
+	if(this.specificImageName != null) {
+		return this.specificImageName;
+	}
+	else {
+		return this.listImageName[0];
+	}
 };
 
 //get current image
@@ -65,8 +77,8 @@ BaseObject.prototype.getFullId = function() {
 	return this.id;
 };
 
-BaseObject.prototype.getType = function(whichType) {
-	return this.type[whichType];
+BaseObject.prototype.getObjInMapLevel = function() {
+	return this.objInMapLevel;
 };
 
 BaseObject.prototype.getGenWay = function() {

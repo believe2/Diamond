@@ -15,4 +15,8 @@ ImageFactory.prototype.load = function(imgName) {
 
 ImageFactory.prototype.getIconPath = function(itemName) {
 	return this.dir + "/icon/" + itemName + ".png";
-}
+};
+
+ImageFactory.prototype.getDir = function() {
+	return this.dir;
+};

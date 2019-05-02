@@ -2,6 +2,7 @@ var Exit = function(args) {
 	BaseObject.call(this, args);
 
 	this.listImage = ['tile.jpg', 'exit.jpg'];
+	this.specificImageName = 'exit.jpg';
 	this.isOpen = false;
 	this.animateGameObject = this.actionFactory.create({actionType: 'ANIMATE_GAME_OBJECT',
 		                                                mainObj: this

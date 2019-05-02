@@ -1,5 +1,5 @@
-var EditMapFrame = function (ctx, gameFrame) {
-	GameFrame.call(this, ctx);
+var EditMapFrame = function (ctx, canvGame, gameFrame) {
+	GameFrame.call(this, ctx, canvGame);
 
 	this.curSelObjInfo = null;
 	this.curSelBtn = null;

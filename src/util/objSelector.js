@@ -5,12 +5,14 @@ var ObjSelector = function (idTag, listObjInfo, btnWidth, btnHeight, funcOnClick
 		listObjInfo.push({num: -1, type: {dim: "OBJECT"}, id: 'null', listImage: ["delete.png"]});
 	}
 
+	console.log(listObjInfo)
+
 	var index = 0;
 	while(index < listObjInfo.length) {
 		(function(objInfo, index) {
 			var $btn = $('<button/>', {
 		        style: 'background-color: white;' +
-		        	   'background-image: url("img/' + listObjInfo[index].listImage[0] + '");' + 
+		        	   'background-image: url("' + listObjInfo[index].getRepresentativeImagePath() + '");' + 
 		        	   'width:' + btnWidth + 'px;' +
 		        	   'height:' + btnHeight + 'px;' +
 		        	   'background-size:' + (btnWidth - 10) + 'px ' + (btnWidth - 10) + 'px;' +

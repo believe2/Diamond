@@ -1,7 +1,8 @@
 var StretchWall = function(args) {
 	StoneWall.call(this, args);
 
-	this.listImage = ['stone wall.jpg', 'stone wall-stretch.jpg'];
+	this.listImage = ['stone wall.jpg'];
+	this.specificImageName = 'stone wall-stretch.jpg';
 	this.listCanPass = ['ROAD'];
 
 	this.ARGS_STRETCH_DIR = ['LEFT'];

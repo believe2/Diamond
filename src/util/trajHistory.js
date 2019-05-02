@@ -6,6 +6,9 @@ var TrajHistory = function(maxX, maxY) {
 };
 
 TrajHistory.prototype.initialMap = function(maxX, maxY) {
+	if(maxX == -1 || maxY == -1) {
+		return;
+	}
 	this.listMap = new Array(maxY);
 	var indexY = 0;
 	while(indexY <= maxY) {

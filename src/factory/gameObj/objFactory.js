@@ -80,10 +80,8 @@ ObjFactory.prototype.create = function(objId) {
 
 ObjFactory.prototype.getAllTypeOfObj = function() {
  	var list = [];
- 	for(key in this.listObj) {
- 		var ele = {num: key, type: this.mapNameToInfo[this.listObj[key]].type, 
- 				   id: this.listObj[key], listImage: this.mapNameToInfo[this.listObj[key]].listImage};
- 		list.push(ele);
+ 	for(key in this.mapNameToInfo) {
+ 		list.push(this.create(key));
  	}
  	return list;
 };
