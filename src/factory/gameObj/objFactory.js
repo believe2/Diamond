@@ -87,3 +87,14 @@ ObjFactory.prototype.getAllTypeOfObj = function() {
  	}
  	return list;
 };
+
+ObjFactory.prototype.getNoByObjId = function(objId) {
+	var targetNo = null;
+	for(key in this.listObj) {
+		if(this.listObj[key] == objId) {
+			targetNo = key;
+			break;
+		}
+	}
+	return targetNo;
+};

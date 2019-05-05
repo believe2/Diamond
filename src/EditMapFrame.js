@@ -112,8 +112,8 @@ EditMapFrame.prototype.slotOnPopupPanel = function(event) {
 	this.mousePush = false;
 };
 
-EditMapFrame.prototype.slotSyncMap = function(args) {
-	this.gameFrame.slotSyncMap(args);
+EditMapFrame.prototype.slotSyncMap = function() {
+	this.gameFrame.slotReloadGame('SYNC', this.mapFactory);
 };
 
 EditMapFrame.prototype.setCanvas = function(width, height) {

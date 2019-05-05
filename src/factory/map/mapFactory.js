@@ -169,24 +169,15 @@ MapFactory.prototype.getAllObjCanPassPos = function(objId) {
 	return listPosCanPass;
 };
 
-MapFactory.prototype.getSnapshot = function(idToNoTransformator) {
-	var snapshot = (new Space()).gen2DimArray(this.getMaxY() + 1, this.getMaxX() + 1);
-	var indexX = 0;
-	while(indexX <= this.getMaxX()){
-		var indexY = 0;
-		while(indexY <= this.getMaxY()) {
-			var pos = new Position(indexX, indexY);
-			var ele = this.getEle(pos);
-			if(ele == null) {
-				snapshot[indexY][indexX] = -1;
-			}
-			else {
-				snapshot[indexY][indexX] = idToNoTransformator(this.getEle(pos).getId());
-			}
-			indexY = indexY + 1;
-		}
-		indexX = indexX + 1;
-	}
+MapFactory.prototype.getSnapshot = function() {
+	var width = this.mapRawData[0][0].length;
+	var height = this.mapRawData[0].length;
+	var level = Object.keys(this.mapRawData).length;
+	var snapshot = (new Space()).gen3DimArray(height, width, level);
+	var callbackFuncObjIdMapping = function(pos, ele) {
+		snapshot[pos.z][pos.y][pos.x] = this.objFactory.getNoByObjId(ele.getId());
+	};
+	this.processMapEle(callbackFuncObjIdMapping.bind(this));
 	return snapshot;
 };
 
@@ -234,6 +225,10 @@ MapFactory.prototype.changeMapDimension = function(width, height, idToNoTransfor
 	this.width = this._map[0].length;
 	this.height = this._map.length;
 	this.createObjByMap(args);
+};
+
+MapFactory.prototype.syncMapSetting = function(otherMapFactory) {
+	this.mapRawData = otherMapFactory.getSnapshot();
 };
 
 MapFactory.prototype.processMapEle = function(callBackFuncEle, isProcessAbstractEle) {

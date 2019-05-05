@@ -269,6 +269,7 @@
 			var canvEditMap = document.getElementById("canvEditMap");
 			var ctxEditmap = canvEditMap.getContext("2d");
 			var editMapFrame = new EditMapFrame(ctxEditmap, canvEditMap, gameFrame);
+			document.getElementById("btnSync").addEventListener('click', editMapFrame.slotSyncMap.bind(editMapFrame));
 			//canvEditMap.addEventListener('mousedown', editMapFrame.slotOnPushPanel.bind(editMapFrame), false);
 			//canvEditMap.addEventListener('mousemove', editMapFrame.slotOnTouchPanel.bind(editMapFrame), false);
 			//canvEditMap.addEventListener('click', editMapFrame.slotOnTouchPanel.bind(editMapFrame), false);

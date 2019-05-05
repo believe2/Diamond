@@ -51,7 +51,7 @@ GameFrame.prototype.loadMap = function(loadType, res) {
 			self.mapFactory.loadStageInfoFromFile(res, funcInitialStep);
 			break;
 		case 'SYNC':
-			self.mapFileProcessor.loadMapJsonObj(res);
+			self.mapFactory.syncMapSetting(res);
 			funcInitialStep();
 			break;
 		default:
@@ -97,10 +97,6 @@ GameFrame.prototype.slotReloadGame = function(loadType, res) {
 	//this.arrowHint.setIsPaint(false);
 	this.slotStopGame();
 	this.loadMap(loadType, res);
-};
-
-GameFrame.prototype.slotSyncMap = function(args) {
-	this.slotReloadGame('SYNC', args);
 };
 
 GameFrame.prototype.slotGoNextStep = function() {
