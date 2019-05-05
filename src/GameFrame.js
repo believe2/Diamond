@@ -31,6 +31,7 @@ GameFrame.prototype.initial = function() {
 	//monitor to play background music
 	this.soundEffectFactory.initial();
 	this.backgroundMusicFactory.initial();
+	this.gamePanel.setPanelId('PANEL_GAME_FRAME');
 	//arrow hint
 	//this.arrowHint = new ArrowHint();
 	//this.arrowHint.setIsPaint(false);

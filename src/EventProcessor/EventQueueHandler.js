@@ -88,7 +88,9 @@ EventQueueHandler.prototype.move = function(obj, action) {
 	this.map.setEle(nextPos, obj);
 	//set refer object before position
 	if(nextPos != null){
-		this.map.setEle(beforePos, obj.genObjBeforeArea());
+		var newObj = this.objFactory.create(obj.getGenObjBeforeAreaInMove());
+		this.map.setEle(beforePos, newObj);
+		newObj.startAction('ALL');
 		this.scoreboard.processEvent({mainObj: obj, action: "MOVE_ON_FLOOR", target: this.map.getEle(nextPos.getZDownPos())});
 	}
 };
@@ -97,7 +99,10 @@ EventQueueHandler.prototype.push = function(objMaster, posMaster, objTarget, pos
 	this.map.setEle(posTarget, objTarget);
 	var beforePos = objMaster.getCurPos();
 	this.map.setEle(posMaster, objMaster);
-	this.map.setEle(beforePos, objMaster.genObjBeforeArea());
+
+	var newObj = this.objFactory.create(objMaster.getGenObjBeforeAreaInMove());
+	this.map.setEle(beforePos, newObj);
+	newObj.startAction('ALL');
 
 	this.scoreboard.processEvent({mainObj: objMaster, action: "PUSH", target: objTarget});
 	this.scoreboard.processEvent({mainObj: objMaster, action: "MOVE_ON_FLOOR", target: this.map.getEle(posMaster.getZDownPos())});
@@ -112,7 +117,10 @@ EventQueueHandler.prototype.eat = function(objMaster, objTarget) {
 
 	this.destroyObj(masterNextPos);
 	this.map.setEle(masterNextPos, objMaster);
-	this.map.setEle(beforePos, objMaster.genObjBeforeArea());
+	
+	var newObj = this.objFactory.create(objMaster.getGenObjBeforeAreaInMove());
+	this.map.setEle(beforePos, newObj);
+	newObj.startAction('ALL');
 };
 
 EventQueueHandler.prototype.arriveOtherObj = function(objMaster, objExit) {

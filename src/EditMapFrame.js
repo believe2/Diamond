@@ -14,7 +14,7 @@ var EditMapFrame = function (ctx, canvGame, gameFrame) {
 
 	this.constructObjSelector();
 	this.constructModeSelector();
-	this.constructStepSetting();
+	//this.constructStepSetting();
 	this.slotSelMode("MODE_FURNISH");
 };
 
@@ -24,6 +24,8 @@ EditMapFrame.prototype.constructor = EditMapFrame;
 
 EditMapFrame.prototype.initial = function() {
 	console.log("emf initial");
+	this.gamePanel.setPanelId('PANEL_EDIT_MAP_FRAME');
+	this.gamePanel.initial();
 };
 
 EditMapFrame.prototype.constructModeSelector = function() {
@@ -37,10 +39,10 @@ EditMapFrame.prototype.constructModeSelector = function() {
 };
 
 EditMapFrame.prototype.constructObjSelector = function() {
-	var self = this;
+	var listObjInfo = this.objFactory.getAllTypeOfObj();
+	this.objSelector = new ObjSelector('#objSelector', listObjInfo, 60, 60, this.slotSelObjFromSelector.bind(this));
 
-	var listObjInfo = self.objFactory.getAllTypeOfObj();
-	this.objSelector = new ObjSelector('#objSelector', listObjInfo, 60, 60, self.slotSelObjFromSelector.bind(self), true);
+	this.gamePanel.bindOnMouseDownEvent(this.slotOnTouchPanel.bind(this));
 };
 
 EditMapFrame.prototype.constructStepSetting = function() {
@@ -51,27 +53,6 @@ EditMapFrame.prototype.constructStepSetting = function() {
 
 	self.objSettingFrame = new ObjSettingFrame(self.updateObjSetting.bind(self), 
 		self.stepSetting.getSetting.bind(self.stepSetting));
-};
-
-EditMapFrame.prototype.slotDrawFrameEvent = function() {
-	var indexX = 0;
-	while(indexX <= this.mapFactory.getMaxX()){
-		var indexY = 0;
-		while(indexY <= this.mapFactory.getMaxY()) {
-			var pos = new Position(indexX, indexY);
-			this.drawOneElement(pos);
-			var ele = this.mapFactory.getEle(pos);
-			if(ele != null && this.counter == 40) {
-				ele.setNextImg();
-			}
-			indexY = indexY + 1;
-		}
-		indexX = indexX + 1;
-	}
-	if(this.counter == 40) {
-		this.counter = -1;
-	}
-	this.counter = this.counter + 1;
 };
 
 EditMapFrame.prototype.slotSelObjFromSelector = function(selObj) {
@@ -97,17 +78,18 @@ EditMapFrame.prototype.slotSelMode = function(selMode) {
 };
 
 EditMapFrame.prototype.slotOnTouchPanel = function(event) {
-	var posTouch = new Position(event.offsetX, event.offsetY);
-	var posClickCube = new Position(Math.floor(posTouch.x / this.cubeWidth), Math.floor(posTouch.y / this.cubeHeight));
-	if(this.mousePush || event.type == 'click') {
+	var posClickCube = event;
+	//if(this.mousePush || event.type == 'click') {
 		switch(this.mode) {
 			case "MODE_FURNISH": 
+				posClickCube.z = this.curSelObjInfo.getObjInMapLevel();
 				var orgObj = this.mapFactory.getEle(posClickCube);
 				if(orgObj != null) {
 					var orgObjSetting = this.stepSetting.getSetting(posClickCube, orgObj.getId());
 					this.stepSetting.updateSetting(orgObjSetting, "DELETE");
 				}
-				this.slotCreateObjEvent(this.curSelObjInfo.id, posClickCube, true);
+				var newObj = this.objFactory.create(this.curSelObjInfo.getId());
+				this.mapFactory.setEle(posClickCube, newObj);
 				break;
 			case "MODE_CONFIG":
 				if(event.type == 'click') {
@@ -119,7 +101,7 @@ EditMapFrame.prototype.slotOnTouchPanel = function(event) {
 				}
 				break;
 		}
-	}
+	//}
 };
 
 EditMapFrame.prototype.slotOnPushPanel = function(event) {

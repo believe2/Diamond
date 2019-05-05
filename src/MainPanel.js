@@ -2,6 +2,8 @@ var MainPanel = function(ctx, canvas){
 	this.mapBindFunc = {};
 	this.mapFactory = null;
 	this.timerDraw = null;
+	this.timerObjDisplay = null;
+	this.panelId = null;
 
 	this.drawMaxWidth = 12;
 	this.drawMaxHeight = 14;
@@ -12,6 +14,27 @@ var MainPanel = function(ctx, canvas){
 	
 	this.canvas = canvas;
 	this.ctx = ctx;
+};
+MainPanel.prototype.initial = function() {
+	var self = this;
+	if(this.panelId == 'PANEL_EDIT_MAP_FRAME') {
+		var callBackFuncChangeImg = function(pos, ele) {
+			if(ele == null) {  //no element
+				return;
+			}
+			ele.setNextImg();
+		};
+		var callbackfuncObjDisplay = function() {
+			self.mapFactory.processMapEle(callBackFuncChangeImg.bind(self));
+		}
+		this.timerObjDisplay = setInterval(callbackfuncObjDisplay.bind(this), 1000);
+	}
+};
+MainPanel.prototype.setPanelId = function(panelId) {
+	this.panelId = panelId;
+};
+MainPanel.prototype.getPanelId = function() {
+	return this.panelId;
 };
 /* Bind Mouse push event to given bindFunc with touch positon (event.offsetX, event.offsetY) */
 MainPanel.prototype.bindOnMouseDownEvent = function(bindFunc) {
@@ -58,7 +81,7 @@ MainPanel.prototype.setMap = function(mapFactory) {
 */
 MainPanel.prototype.drawByCubeMap = function() {
 	var callBackFuncDrawImg = function(pos, ele) {
-		if(ele == null) {  //no element
+		if(ele == null || ele.getId() == 'NO_OBJECT') {  //no element
 			return;
 		}
 		if(!this.isObjPosInDrawRange(pos)) {  //object position outbound the view range

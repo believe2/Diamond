@@ -19,6 +19,7 @@ var BaseObject = function (args) {
 	this.genWay = this.GEN_WAY_INITIAL;
 	this.listCanPass = args.listCanPass;
 	this.objInMapLevel = 1;
+	this.genObjBeforeAreaInMove = 'NO_OBJECT';
 	
 	this.burst = args.burst;
 	this.mapRegisteredAction = [];
@@ -31,13 +32,15 @@ var BaseObject = function (args) {
 
 //load each image through given imageFactory based on setted image name in listImage
 BaseObject.prototype.setListImageByImageFactory = function(imgFactory) {
-	var index = 0;
-	this.listImageName = [];
- 	while(index < this.listImage.length) {
- 		this.listImageName[index] = imgFactory.getDir() + "/" + this.listImage[index];
- 		this.listImage[index] = imgFactory.load(this.listImage[index]);
- 		index = index + 1;
- 	}
+	if(this.listImage != null) {
+		var index = 0;
+		this.listImageName = [];
+	 	while(index < this.listImage.length) {
+	 		this.listImageName[index] = imgFactory.getDir() + "/" + this.listImage[index];
+	 		this.listImage[index] = imgFactory.load(this.listImage[index]);
+	 		index = index + 1;
+	 	}
+	 }
  	if(this.specificImageName != null) {
  		this.specificImageName = imgFactory.getDir() + "/" + this.specificImageName;
  	}
@@ -59,6 +62,9 @@ BaseObject.prototype.getCurImg = function() {
 
 //set next image
 BaseObject.prototype.setNextImg = function() {
+	if(this.listImage == null) {
+		return;
+	}
 	this.curImage = (this.curImage + 1) % this.listImage.length;
 };
 
@@ -85,8 +91,8 @@ BaseObject.prototype.getGenWay = function() {
 	return this.genWay;
 };
 
-BaseObject.prototype.genObjBeforeArea = function() {
-	return null;
+BaseObject.prototype.getGenObjBeforeAreaInMove = function() {
+	return this.genObjBeforeAreaInMove;
 }
 
 BaseObject.prototype.setGenWay = function(setGenWay) {
@@ -97,7 +103,7 @@ BaseObject.prototype.setGenWay = function(setGenWay) {
 BaseObject.prototype.isPassby = function(pos) {
 	var objInfo = this.map.getEle(pos);
 	var isOk = false;
-	if(objInfo == null) {
+	if(objInfo == null || objInfo.getId() == 'NO_OBJECT') {
 		isOk = true;
 	}
 	else if(this.listCanPass != null) {

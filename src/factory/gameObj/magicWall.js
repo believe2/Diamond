@@ -2,6 +2,7 @@ var MagicWall = function(args) {
 	StoneWall.call(this, args);
 
 	this.listImage = ['stone wall.jpg', 'stone wall_1.jpg', 'stone wall_2.jpg'];
+	this.specificImageName = 'stone wall_2.jpg';
 	
 	this.isMagicing = false;
 	this.timeMaxMagic = 60;

@@ -1,12 +1,6 @@
-var ObjSelector = function (idTag, listObjInfo, btnWidth, btnHeight, funcOnClick, isAddNullObj) {
+var ObjSelector = function (idTag, listObjInfo, btnWidth, btnHeight, funcOnClick) {
 	var self = this;
 	self.curSelBtn = null;
-	if(isAddNullObj) {  //add null object (mean delete current object)
-		listObjInfo.push({num: -1, type: {dim: "OBJECT"}, id: 'null', listImage: ["delete.png"]});
-	}
-
-	console.log(listObjInfo)
-
 	var index = 0;
 	while(index < listObjInfo.length) {
 		(function(objInfo, index) {

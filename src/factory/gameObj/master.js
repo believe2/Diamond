@@ -29,8 +29,9 @@ var Master = function (args) {
 		                                         lockTime: 8,
 		                                         mainObj: this
 	                                           });
-
-	this.setController(this.gamePanel);
+	if(this.gamePanel.getPanelId() == 'PANEL_GAME_FRAME') {
+		this.setController(this.gamePanel);
+	}
 
 	this.registerAction(1, 230, this.animateGameObject.doAction.bind(this.animateGameObject));
     this.registerAction(2, 50, this.moveByHand.doAction.bind(this.moveByHand));

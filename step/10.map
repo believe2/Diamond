@@ -53,7 +53,7 @@
 			{
 				"main_object": "STONE",
 				"action": "MOVE_ON_FLOOR",
-				"target": "WoodFloor",
+				"target": "WOOD_FLOOR",
 				"amount": 7,
 				"isBypassSubId": false
 			}

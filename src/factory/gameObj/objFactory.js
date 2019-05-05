@@ -5,23 +5,25 @@ var ObjFactory = function () {
  	this.gamePanel = null;
 
  	this.listObj = {
- 		0: 'ROAD',
- 		1: 'SAND',
- 		2: 'STONE',
- 		3: 'STONE_WALL',
- 		4: 'DIAMOND',
- 		5: 'STRETCH_WALL',
- 		6: 'MAGIC_WALL',
- 		7: 'GREEN_WATER',
- 		8: "BURST_AREA",
- 		9: "MONSTER_CUBE",
- 		10:"TILE",
- 		11:"BUTTERFLY",
- 		12:"MASTER",
- 		13:"EXIT",
- 		14:"WoodFloor"
+ 		'-1': 'NO_OBJECT',
+ 		'0': 'ROAD',
+ 		'1': 'SAND',
+ 		'2': 'STONE',
+ 		'3': 'STONE_WALL',
+ 		'4': 'DIAMOND',
+ 		'5': 'STRETCH_WALL',
+ 		'6': 'MAGIC_WALL',
+ 		'7': 'GREEN_WATER',
+ 		'8': "BURST_AREA",
+ 		'9': "MONSTER_CUBE",
+ 		'10':"TILE",
+ 		'11':"BUTTERFLY",
+ 		'12':"MASTER",
+ 		'13':"EXIT",
+ 		'14':"WOOD_FLOOR"
  	};
  	this.mapNameToInfo = {
+ 		'NO_OBJECT':    {builder: NoObject},
  		'ROAD': 		{builder: Road},
  		'SAND': 		{builder: Sand},
  		'STONE': 		{builder: Stone},
@@ -36,7 +38,7 @@ var ObjFactory = function () {
  		'BUTTERFLY':    {builder: Butterfly},
  		'MASTER':       {builder: Master},
  		'EXIT':         {builder: Exit},
- 		'WoodFloor':    {builder: WoodFloor}
+ 		'WOOD_FLOOR':   {builder: WoodFloor}
  	};
 };
 
